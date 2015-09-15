@@ -1,0 +1,28 @@
+{
+    "name": "elixir/elixir-i18n",
+    "description": "Component stdlib",
+    "license": "BSD-3-Clause",
+    "keywords": [
+        "elixir",
+        "i18n"
+    ],
+    "homepage": "https://github.com/cedtanghe/elixir-i18n",
+    "require": {
+        "php": ">=5.4"
+    },
+    "require-dev": {
+        "phpunit/PHPUnit": "~4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Elixir\\I18N\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Elixir\\Test\\I18N\\": "tests/"
+        }
+    },
+    "suggest": {
+    }
+}
