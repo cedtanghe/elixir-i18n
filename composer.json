@@ -7,6 +7,8 @@
         "i18n"
     ],
     "homepage": "https://github.com/cedtanghe/elixir-i18n",
+    "repositories": [
+    ],
     "require": {
         "php": ">=5.4"
     },
