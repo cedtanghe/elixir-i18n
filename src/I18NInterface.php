@@ -5,7 +5,6 @@ namespace Elixir\I18N;
 /**
  * @author Cédric Tanghe <ced.tanghe@gmail.com>
  */
-
 interface I18NInterface
 {
     /**
