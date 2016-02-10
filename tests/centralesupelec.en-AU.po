@@ -1,0 +1,677 @@
+# $Id$
+#
+# English translation of Drupal (general)
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from files:
+#  centralesupelec.info: n/a
+#  includes/preprocess/page.php: n/a
+#  templates/nodes/node--trainings-list.tpl.php: n/a
+#  templates/nodes/node--trainings-planning.tpl.php: n/a
+#  templates/html.tpl.php: n/a
+#  templates/blocks/block--system--user-menu.tpl.php: n/a
+#  templates/forms/search-block-form.tpl.php: n/a
+#  templates/nodes/node--news-list.tpl.php: n/a
+#  templates/nodes/node--news.tpl.php: n/a
+#  templates/search/search-results.tpl.php: n/a
+#  templates/nodes/node--faq.tpl.php: n/a
+#  templates/nodes/node--homepage.tpl.php: n/a
+#  templates/partials/news-list-item.tpl.php: n/a
+#  templates/partials/sidebar-block-most-viewed-news.tpl.php: n/a
+#  templates/partials/sidebar-block-news.tpl.php: n/a
+#  templates/nodes/node--notification-training.tpl.php: n/a
+#  templates/nodes/node--training.tpl.php: n/a
+#  templates/nodes/node--share-training.tpl.php: n/a
+#  templates/user/user-register-form.tpl.php: n/a
+#  templates/nodes/node--press.tpl.php: n/a
+#  templates/nodes/node--site-map.tpl.php: n/a
+#  templates/nodes/node--training-configurator-result.tpl.php: n/a
+#  templates/nodes/node--training-configurator.tpl.php: n/a
+#  templates/partials/training-item.tpl.php: n/a
+#  templates/partials/trainings-list-item.tpl.php: n/a
+#  templates/pages/page--customerror--403.tpl.php: n/a
+#  templates/pages/page--customerror--404.tpl.php: n/a
+#  templates/partials/footer.tpl.php: n/a
+#  templates/partials/header.tpl.php: n/a
+#  templates/partials/menu-domain.tpl.php: n/a
+#  templates/partials/popup-ie.tpl.php: n/a
+#  templates/partials/shortcode-trainings-cpf.tpl.php: n/a
+#  templates/partials/shortcode-trainings-highlighted.tpl.php: n/a
+#  templates/partials/shortcode-trainings-most-viewed.tpl.php: n/a
+#  templates/partials/sidebar-block-newsletter.tpl.php: n/a
+#  templates/partials/sidebar-block-popular-tags.tpl.php: n/a
+#  templates/partials/sidebar-block-simple.tpl.php: n/a
+#  templates/user/user-login.tpl.php: n/a
+#  templates/user/user-profile-edit.tpl.php: n/a
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2015-10-05 10:51+0200\n"
+"PO-Revision-Date: 2015-10-05 11:59+0100\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"Language-Team: English <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"Language: en_AU\n"
+"X-Generator: Poedit 1.7.4\n"
+
+#: centralesupelec.info:0
+msgid "CentraleSupelec"
+msgstr ""
+
+#: centralesupelec.info:0
+msgid "Custom theme."
+msgstr ""
+
+#: centralesupelec.info:0
+msgid "Menu Top Bar"
+msgstr ""
+
+#: centralesupelec.info:0
+msgid "Menu Search"
+msgstr ""
+
+#: centralesupelec.info:0
+msgid "Menu Header"
+msgstr ""
+
+#: centralesupelec.info:0
+msgid "Content"
+msgstr ""
+
+#: centralesupelec.info:0
+msgid "Menu Footer Sub"
+msgstr ""
+
+#: centralesupelec.info:0
+msgid "Menu Bottom Bar"
+msgstr ""
+
+#: includes/preprocess/page.php:265;437
+#: templates/nodes/node--trainings-list.tpl.php:104;109
+#: templates/nodes/node--trainings-planning.tpl.php:95;100
+msgid "Tous"
+msgstr "All"
+
+#: templates/html.tpl.php:26
+msgid "Skip to main content"
+msgstr ""
+
+#: templates/blocks/block--system--user-menu.tpl.php:15
+msgid "Mon espace"
+msgstr "My space"
+
+#: templates/forms/search-block-form.tpl.php:1
+#: templates/nodes/node--news-list.tpl.php:62
+#: templates/nodes/node--news.tpl.php:62
+#: templates/nodes/node--trainings-list.tpl.php:91
+#: templates/nodes/node--trainings-planning.tpl.php:88
+#: templates/search/search-results.tpl.php:93
+msgid "Filtrer par"
+msgstr "Filtrer par"
+
+#: templates/forms/search-block-form.tpl.php:6
+#: templates/nodes/node--trainings-list.tpl.php:98
+#: templates/search/search-results.tpl.php:100
+msgid "Sous-domaines"
+msgstr "Subfield"
+
+#: templates/forms/search-block-form.tpl.php:16
+#: templates/nodes/node--trainings-list.tpl.php:122
+#: templates/nodes/node--trainings-planning.tpl.php:119
+#: templates/search/search-results.tpl.php:114
+msgid "Date"
+msgstr "Date"
+
+#: templates/forms/search-block-form.tpl.php:21
+#: templates/nodes/node--trainings-list.tpl.php:126
+#: templates/search/search-results.tpl.php:121;127
+msgid "Date de début"
+msgstr "Starting date"
+
+#: templates/forms/search-block-form.tpl.php:28
+#: templates/nodes/node--trainings-list.tpl.php:127
+msgid "Date de fin"
+msgstr "Ending date"
+
+#: templates/forms/search-block-form.tpl.php:35
+#: templates/nodes/node--trainings-planning.tpl.php:110
+msgid "Type de formation"
+msgstr "Training type"
+
+#: templates/nodes/node--faq.tpl.php:80
+msgid "Vous trouverez ci-dessous les réponses aux questions les plus fréquemment posées.<br>Vous vous posez d’autres questions ? N’hésitez pas à nous contacter en direct au !phone ou par mail : !email"
+msgstr "You find below the answers to the frequently asked questions.<br>You have other questions ? Call us at !phone or email us : !email"
+
+#: templates/nodes/node--homepage.tpl.php:33
+msgid "CentraleSupélec Executive Education est l'entité dédiée à la formation continue de CentraleSupélec. En accompagnant les professionnels aux différentes étapes de leur carrière dans le champ des sciences de l'ingénieur et du management, nous prolongeons notre mission première : celle de former les leaders de culture scientifique et technologique, et des innovateurs, capables de relever les grands défis de leur temps."
+msgstr "CentraleSupélec Executive Education is the entity dedicated to the lifelong training of CentraleSupélec. Accompanying professionals at different stages of their career in the field of engineering sciences and management, we extend our first mission: train science and technology literacy leaders and innovators, able to meet the major challenges of their time"
+
+#: templates/nodes/node--homepage.tpl.php:50
+msgid "formations à la une"
+msgstr "Highlighted programs"
+
+#: templates/nodes/node--homepage.tpl.php:99
+msgid "CentraleSupelec exec tweet"
+msgstr "CentraleSupelec exec tweet"
+
+#: templates/nodes/node--homepage.tpl.php:138
+msgid "actualités"
+msgstr "news"
+
+#: templates/nodes/node--homepage.tpl.php:143
+#: templates/nodes/node--news.tpl.php:206
+#: templates/partials/news-list-item.tpl.php:93
+#: templates/partials/sidebar-block-most-viewed-news.tpl.php:32
+#: templates/partials/sidebar-block-news.tpl.php:36
+msgid "Lire la suite"
+msgstr "More"
+
+#: templates/nodes/node--homepage.tpl.php:220
+msgid "trouver ma formation"
+msgstr "Find your program"
+
+#: templates/nodes/node--homepage.tpl.php:224
+msgid "Vous trouverez bien la vôtre."
+msgstr "You'll find yours."
+
+#: templates/nodes/node--homepage.tpl.php:226
+msgid "Commencer"
+msgstr "Start"
+
+#: templates/nodes/node--homepage.tpl.php:302
+msgid "formation"
+msgstr "training"
+
+#: templates/nodes/node--homepage.tpl.php:343
+msgid "RÉF"
+msgstr "REF"
+
+#: templates/nodes/node--news-list.tpl.php:119
+msgid "Pas d'actualités actuellement."
+msgstr "No news for now."
+
+#: templates/nodes/node--news.tpl.php:169
+msgid "Retour aux articles"
+msgstr "Back to the news"
+
+#: templates/nodes/node--news.tpl.php:185
+msgid "Découvrez aussi"
+msgstr "See also"
+
+#: templates/nodes/node--notification-training.tpl.php:45
+#: templates/nodes/node--training.tpl.php:402
+msgid "Rester informé des mises à jour par e-mail"
+msgstr "Stay informed of updates by email"
+
+#: templates/nodes/node--notification-training.tpl.php:46
+#: templates/nodes/node--share-training.tpl.php:46
+msgid "Formation sélectionnée"
+msgstr "Selected training "
+
+#: templates/nodes/node--notification-training.tpl.php:118
+#: templates/nodes/node--share-training.tpl.php:144
+msgid "Champs obligatoires"
+msgstr "Required fields"
+
+#: templates/nodes/node--notification-training.tpl.php:120
+#: templates/nodes/node--share-training.tpl.php:146
+#: templates/user/user-register-form.tpl.php:82
+msgid "CentraleSupélec Executive Education s'engage à ne diffuser vos données nominatives et personnelles à aucun organisme extérieur. Ce site est enregistré à la Commission Nationale de l'Informatique et des Libertés (CNIL) sous le N° 1134883. Conformément à la loi \"Informatique et Liberté\" du 6 janvier 1978, vous disposez d'un droit d'accès, de modification et de suppression des informations vous concernant. Pour l'exercer, veuillez écrire à CentraleSupélec Executive Education, Grande Voie des Vignes, 92 295 CHATENAY-MALABRY Cedex."
+msgstr "CentraleSupélec Executive Education undertakes not to disclose your personal and personal data to any outside organism. This site is registered with the Commission Nationale Informatique et Libertés ( CNIL) under number 1134883. According to the \"law and Freedom\" of January 6th 1978 , you have a right to access, modify and delete information about you. To do so, please contact Executive Education CentraleSupélec at Grande Voie des Vignes, 92295 Cedex CHATENAY - MALABRY ."
+
+#: templates/nodes/node--press.tpl.php:111
+msgid "Contact presse"
+msgstr "Press contact"
+
+#: templates/nodes/node--press.tpl.php:136
+msgid "Télécharger le kit de communication"
+msgstr "Download the press kit"
+
+#: templates/nodes/node--share-training.tpl.php:45
+#: templates/nodes/node--training.tpl.php:690
+msgid "Partager la formation"
+msgstr "Share training"
+
+#: templates/nodes/node--site-map.tpl.php:64
+msgid "Menu principal"
+msgstr "Main menu"
+
+#: templates/nodes/node--site-map.tpl.php:69
+msgid "Menu secondaire"
+msgstr "Secondary menu"
+
+#: templates/nodes/node--site-map.tpl.php:75
+msgid "Nos domaines de compétences"
+msgstr "Our skills families"
+
+#: templates/nodes/node--training-configurator-result.tpl.php:83
+#: templates/nodes/node--trainings-list.tpl.php:148
+#: templates/search/search-results.tpl.php:149
+msgid "affichage"
+msgstr "display"
+
+#: templates/nodes/node--training-configurator-result.tpl.php:89
+#: templates/nodes/node--trainings-list.tpl.php:154
+#: templates/search/search-results.tpl.php:155
+msgid "Carré"
+msgstr "Square"
+
+#: templates/nodes/node--training-configurator-result.tpl.php:95
+#: templates/nodes/node--trainings-list.tpl.php:160
+#: templates/search/search-results.tpl.php:161
+msgid "Lignes"
+msgstr "Line"
+
+#: templates/nodes/node--training-configurator-result.tpl.php:131
+#: templates/nodes/node--trainings-list.tpl.php:196
+#: templates/search/search-results.tpl.php:196
+msgid ""
+"A priori aucune formation ne correspond à votre recherche.<br>\n"
+"                                Notre offre est en perpétuelle évolution, n'hésitez pas à nous consulter pour vous accompagner dans votre projet de formation.<br>\n"
+"                                Notre équipe commerciale est à l’écoute de vos besoins :"
+msgstr ""
+"There is no training matching with your search.<br>\n"
+"                                Our offer is constantly changing , please contact us to assist you in your training project. <br>\n"
+"                                Our sales team is attentive to your needs:"
+
+#: templates/nodes/node--training-configurator-result.tpl.php:73
+#: templates/nodes/node--trainings-list.tpl.php:81
+#: templates/search/search-results.tpl.php:83
+msgid "@count formations trouvée"
+msgid_plural "@count formations trouvées"
+msgstr[0] "@count training"
+msgstr[1] "@count trainings"
+
+#: templates/nodes/node--training-configurator.tpl.php:78
+msgid "<strong>300 formations</strong>, à choisir parmi <strong>35 domaines de compétence</strong>, ce configurateur vous permettra de trouver la formation<br>qui correspond à vos ambitions et à celle de votre entreprise."
+msgstr "<strong>300 trainings/strong>, to choose from <strong>35 skills families/strong>, this configurator allows you to find <br>the training that fits your ambitions."
+
+#: templates/nodes/node--training-configurator.tpl.php:190;197
+msgid "(Choisissez jusqu'à 3 domaines maximum)"
+msgstr "Choose up to 3 fields"
+
+#: templates/nodes/node--training-configurator.tpl.php:318
+msgid "votre récapitulatif"
+msgstr "your summary"
+
+#: templates/nodes/node--training-configurator.tpl.php:324
+msgid "Votre profil"
+msgstr "Your profil"
+
+#: templates/nodes/node--training-configurator.tpl.php:331
+msgid "Types de formation"
+msgstr "Trainings types"
+
+#: templates/nodes/node--training-configurator.tpl.php:338
+msgid "Domaine de<br> formation"
+msgstr "Fields of<br> trainings"
+
+#: templates/nodes/node--training-configurator.tpl.php:345
+msgid "Rythme"
+msgstr "Rythm"
+
+#: templates/nodes/node--training-configurator.tpl.php:352
+msgid "Échéance"
+msgstr "Deadline"
+
+#: templates/nodes/node--training.tpl.php:74
+#: templates/partials/training-item.tpl.php:42
+#: templates/partials/trainings-list-item.tpl.php:50;64
+msgid "réf"
+msgstr "ref"
+
+#: templates/nodes/node--training.tpl.php:133
+msgid "DATES"
+msgstr "DATES"
+
+#: templates/nodes/node--training.tpl.php:143;152
+#: templates/nodes/node--trainings-planning.tpl.php:212;217
+msgid "Formation programmée à la demande - Nous consulter"
+msgstr "Training scheduled on demand - Contact us"
+
+#: templates/nodes/node--training.tpl.php:147;177;179
+#: templates/nodes/node--trainings-planning.tpl.php:208
+msgid "du %s au %s"
+msgstr "from %s to %s"
+
+#: templates/nodes/node--training.tpl.php:159
+msgid "Autres dates pour cette formation"
+msgstr "Other dates for this training"
+
+#: templates/nodes/node--training.tpl.php:193
+msgid "DURÉE"
+msgstr "DURATION"
+
+#: templates/nodes/node--training.tpl.php:244
+msgid "Voir le programme"
+msgstr "See the program"
+
+#: templates/nodes/node--training.tpl.php:252
+msgid "LIEU"
+msgstr "PLACE"
+
+#: templates/nodes/node--training.tpl.php:255
+msgid "Voir le plan"
+msgstr "See the map"
+
+#: templates/nodes/node--training.tpl.php:263
+msgid "PRÉ-REQUIS"
+msgstr "PREREQUISITE"
+
+#: templates/nodes/node--training.tpl.php:276
+msgid "PRIX"
+msgstr "PRICE"
+
+#: templates/nodes/node--training.tpl.php:413
+msgid "Programme"
+msgstr "Program"
+
+#: templates/nodes/node--training.tpl.php:426
+msgid "Les + de la formation"
+msgstr "The training benefits"
+
+#: templates/nodes/node--training.tpl.php:439
+msgid "Objectifs"
+msgstr "Objectives"
+
+#: templates/nodes/node--training.tpl.php:452
+msgid "Profil des participants"
+msgstr "Profile of participants"
+
+#: templates/nodes/node--training.tpl.php:466
+msgid "Corps enseignant"
+msgstr "Teaching staff"
+
+#: templates/nodes/node--training.tpl.php:481
+msgid "Actualités"
+msgstr "News"
+
+#: templates/nodes/node--training.tpl.php:503
+msgid "Réserver ma place"
+msgstr "Book this training"
+
+#: templates/nodes/node--training.tpl.php:562
+msgid "les Autres formations susceptibles de vous intéresser"
+msgstr "The others trainings that may interest you"
+
+#: templates/nodes/node--training.tpl.php:601
+msgid "m'inscrire <span>(bulletin d'inscription pdf)</span>"
+msgstr "subscribe <span>(registration form pdf)</span>"
+
+#: templates/nodes/node--training.tpl.php:608
+msgid "m'inscrire"
+msgstr "subscribe"
+
+#: templates/nodes/node--training.tpl.php:615
+msgid "réserver ma place <span>(gratuit, sans engagement)</span>"
+msgstr "book this training <span>(free, no commitment)</span>"
+
+#: templates/nodes/node--training.tpl.php:647
+msgid "Clôture des inscriptions <strong>aujourd'hui !</strong>"
+msgstr "Registration closes <strong>today !</strong>"
+
+#: templates/nodes/node--training.tpl.php:663
+msgid "Télécharger la fiche formation (PDF)"
+msgstr "Download the training brochure (PDF)"
+
+#: templates/nodes/node--training.tpl.php:688
+msgid "Ajouter cette formation à mon espace"
+msgstr "Add this training in my space"
+
+#: templates/nodes/node--training.tpl.php:689
+msgid "Comment financer ma formation ?"
+msgstr "How to finance my training ?"
+
+#: templates/nodes/node--training.tpl.php:693
+msgid "M'inscrire par téléphone"
+msgstr "Register by phone"
+
+#: templates/nodes/node--training.tpl.php:701
+msgid "Votre contact pour cette formation"
+msgstr "Your contact for this training"
+
+#: templates/nodes/node--training.tpl.php:745
+msgid "Cette formation est disponible en intra-entreprise"
+msgstr "This training is available in your firm"
+
+#: templates/nodes/node--training.tpl.php:748
+msgid "En savoir plus"
+msgstr "More"
+
+#: templates/nodes/node--training.tpl.php:197
+#: templates/nodes/node--trainings-planning.tpl.php:225
+msgid "@count jour"
+msgid_plural "@count jours"
+msgstr[0] "@count day"
+msgstr[1] "@count days"
+
+#: templates/nodes/node--training.tpl.php:207
+#: templates/nodes/node--trainings-planning.tpl.php:235
+msgid "@count heure"
+msgid_plural "@count heures"
+msgstr[0] "@count hour"
+msgstr[1] "@count hours"
+
+#: templates/nodes/node--training.tpl.php:637
+msgid "Clôture des inscriptions dans <strong>@count jour !</strong>"
+msgid_plural "Clôture des inscriptions dans <strong>@count jours !</strong>"
+msgstr[0] "Registration closes in <strong>@count day !</strong>"
+msgstr[1] "Registration closes in <strong>@count days !</strong>"
+
+#: templates/nodes/node--trainings-list.tpl.php:128
+#: templates/search/search-results.tpl.php:130
+msgid "valider"
+msgstr "validate"
+
+#: templates/nodes/node--trainings-list.tpl.php:135
+#: templates/search/search-results.tpl.php:137
+msgid "Type de<br>formation"
+msgstr "Type of<br>training"
+
+#: templates/nodes/node--trainings-planning.tpl.php:92
+msgid "Domaines<br/>Sous-domaines"
+msgstr "Fields<br/>Subfields"
+
+#: templates/nodes/node--trainings-planning.tpl.php:190
+msgid "Réf"
+msgstr "Réf"
+
+#: templates/nodes/node--trainings-planning.tpl.php:220
+msgid "Dates"
+msgstr "Dates"
+
+#: templates/nodes/node--trainings-planning.tpl.php:243
+msgid "Durée"
+msgstr "Length"
+
+#: templates/nodes/node--trainings-planning.tpl.php:247
+msgid "Pas de date actuellement."
+msgstr "No date for now."
+
+#: templates/pages/page--customerror--403.tpl.php:24
+msgid "Accès interdit"
+msgstr "Access forbidden"
+
+#: templates/pages/page--customerror--403.tpl.php:26
+#: templates/pages/page--customerror--404.tpl.php:26
+msgid "Retour à l'accueil"
+msgstr "Back to Home"
+
+#: templates/pages/page--customerror--404.tpl.php:24
+msgid "Malgré tous nos efforts, nous n’avons pas trouvé la page que vous recherchiez..."
+msgstr "Despite our best efforts, we did not find the page you were looking for..."
+
+#: templates/partials/footer.tpl.php:13
+msgid "recevoir notre newsletter"
+msgstr "Sign in to our newsletter"
+
+#: templates/partials/footer.tpl.php:35
+msgid "nous contacter<br>par e-mail"
+msgstr "contact us<br>by email"
+
+#: templates/partials/footer.tpl.php:39
+msgid "Nous contacter par téléphone"
+msgstr "Contact us by phone"
+
+#: templates/partials/footer.tpl.php:44
+msgid "accéder<br>au moodle"
+msgstr "Access>br>to the moodle"
+
+#: templates/partials/footer.tpl.php:48
+msgid "rester connecté"
+msgstr "Stay connected"
+
+#: templates/partials/header.tpl.php:33;48
+msgid "CentraleSupélec <span>Executive Education</span>"
+msgstr "CentraleSupélec <span>Executive Education</span>"
+
+#: templates/partials/header.tpl.php:35;50
+msgid "Le monde change, nous vous aidons à changer"
+msgstr "The world is changing, we can help you change"
+
+#: templates/partials/header.tpl.php:68;105
+msgid "Menu"
+msgstr "Menu"
+
+#: templates/partials/header.tpl.php:92;118
+msgid "Besoin d'un conseil ?"
+msgstr "Need an advice ?"
+
+#: templates/partials/menu-domain.tpl.php:5
+msgid "Nos formations continuent... à qualifier, à diplômer et à certifier"
+msgstr "Our courses continue...to qualify, to award diplimas, and to certify"
+
+#: templates/partials/menu-domain.tpl.php:38
+msgid "Présentation du domaine"
+msgstr "Field presentation"
+
+#: templates/partials/menu-domain.tpl.php:106
+msgid "Télécharger la plaquette de ce domaine"
+msgstr "Download the brochure of this field"
+
+#: templates/partials/popup-ie.tpl.php:3
+msgid "To make the most of this site"
+msgstr "Pour profiter pleinement de ce site"
+
+#: templates/partials/popup-ie.tpl.php:4
+msgid "thank you to update your browser"
+msgstr "merci de mettre à jour votre navigateur"
+
+#: templates/partials/popup-ie.tpl.php:5
+msgid "click here"
+msgstr "cliquez ici"
+
+#: templates/partials/shortcode-trainings-cpf.tpl.php:32
+msgid "Voir nos formations éligible au CPF"
+msgstr "See our CPF eligible courses"
+
+#: templates/partials/shortcode-trainings-highlighted.tpl.php:37
+msgid "!formation_name à la une"
+msgstr "!training_name highlighted"
+
+#: templates/partials/shortcode-trainings-most-viewed.tpl.php:31
+msgid "!formation_name les plus consultées"
+msgstr "!training_name most viewed"
+
+#: templates/partials/sidebar-block-most-viewed-news.tpl.php:4
+msgid "L'article le plus consulté"
+msgstr "The most viewed article"
+
+#: templates/partials/sidebar-block-newsletter.tpl.php:3
+msgid "Recevoir notre newsletter"
+msgstr "Sign in to our newsletter"
+
+#: templates/partials/sidebar-block-popular-tags.tpl.php:4
+msgid "Tags populaires"
+msgstr "Popular tags"
+
+#: templates/partials/sidebar-block-simple.tpl.php:37
+msgid "EN SAVOIR PLUS"
+msgstr "MORE"
+
+#: templates/partials/training-item.tpl.php:60
+#: templates/partials/trainings-list-item.tpl.php:85
+msgid "Voir la formation"
+msgstr "See the training"
+
+#: templates/partials/training-item.tpl.php:90
+msgid "Clôture des inscriptions<br> <strong>aujourd'hui !</strong>"
+msgstr "Registration closes<br> <strong>today!</strong>"
+
+#: templates/partials/training-item.tpl.php:80
+msgid "Clôture des inscriptions<br>dans <strong>@count jour !</strong>"
+msgid_plural "Clôture des inscriptions<br>dans <strong>@count jours !</strong>"
+msgstr[0] "Registration close<br>in <strong>@count day!</strong>"
+msgstr[1] "Registration close<br>in <strong>@count days!</strong>"
+
+#: templates/user/user-login.tpl.php:12
+msgid "connexion"
+msgstr "Sign in"
+
+#: templates/user/user-login.tpl.php:17
+msgid "J'ai déjà un compte"
+msgstr "I already have an account"
+
+#: templates/user/user-login.tpl.php:21
+msgid "Mot de passe oublié ?"
+msgstr "Forgot password ?"
+
+#: templates/user/user-login.tpl.php:27
+msgid "Je ne suis pas encore inscrit"
+msgstr "I am not registered yet"
+
+#: templates/user/user-login.tpl.php:32
+msgid "<strong class=\"text_pink\">Cet espace est conçu pour vous</strong>."
+msgstr "<strong class=\"text_pink\">This area is made for you</strong>."
+
+#: templates/user/user-login.tpl.php:40
+msgid "En créant votre compte, <strong class=\"text_pink\">vous pouvez y conserver les formations qui ont retenues votre attention</strong> et vous inscrire à notre newsletter pour recevoir mensuellement nos actualités."
+msgstr "By creating an account , <strong class=\" text_pink \">you can keep the trainings that have retained your attention</ strong> and sign up for our monthly newsletter to receive our news."
+
+#: templates/user/user-login.tpl.php:49
+msgid "Une fois inscrit à l'une de nos formations, <strong class=\"text_pink\">vous pourrez accéder à de nombreuses autres fonctionnalités</strong> : convocations, accès au LMS (Learning Management System)"
+msgstr "Once registered to one of our courses, <strong class=\"text_pink \">you can access many other features</strong> : convocations, access to the LMS ( Learning Management System)"
+
+#: templates/user/user-profile-edit.tpl.php:27
+msgid "Mes formations favorites"
+msgstr "My favorite courses"
+
+#: templates/user/user-profile-edit.tpl.php:32
+msgid "Formations favorites"
+msgstr "Favorite courses"
+
+#: templates/user/user-profile-edit.tpl.php:64
+msgid "Dernières formations consultées"
+msgstr "Latest courses consulted"
+
+#: templates/user/user-profile-edit.tpl.php:96
+msgid "Formations susceptibles de vous intéresser"
+msgstr "Courses may interests you"
+
+#: templates/user/user-profile-edit.tpl.php:129
+msgid "Informations et coordonnées"
+msgstr "Information and contact"
+
+#: templates/user/user-profile-edit.tpl.php:187
+msgid "Newsletter"
+msgstr "Newsletter"
+
+#: templates/user/user-profile-edit.tpl.php:192
+msgid "Vous êtes inscrit à la newsletter"
+msgstr "You are subscribed to the newsletter"
+
+#: templates/user/user-profile-edit.tpl.php:200
+msgid "Enregistrer mes modifications"
+msgstr "Save my modifications"
+
+#: templates/user/user-profile-edit.tpl.php:210
+#: templates/user/user-register-form.tpl.php:81
+msgid "* Champs obligatoires"
+msgstr "* Required fields"
+
+#: templates/user/user-register-form.tpl.php:12
+msgid "Créer un compte"
+msgstr "Create an account"

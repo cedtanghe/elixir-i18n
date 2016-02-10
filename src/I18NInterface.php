@@ -8,6 +8,11 @@ namespace Elixir\I18N;
 interface I18NInterface
 {
     /**
+     * @var string
+     */
+    const DEFAULT_TEXT_DOMAIN = 'messages';
+    
+    /**
      * @param string $value
      */
     public function setLocale($value);
@@ -25,10 +30,11 @@ interface I18NInterface
     public function translate($message, array $options = []);
     
     /**
-     * @param string $message
+     * @param string $singular
+     * @param string $plural
      * @param int $count
      * @param array $options
      * @return string
      */
-    public function transPlural($message, $count, array $options = []);
+    public function transPlural($singular, $plural, $count, array $options = []);
 }

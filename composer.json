@@ -14,7 +14,8 @@
         "php": ">=5.4"
     },
     "require-dev": {
-        "phpunit/PHPUnit": "~4.0"
+        "phpunit/PHPUnit": "~4.0",
+        "sepia/po-parser": "*"
     },
     "autoload": {
         "psr-4": {
@@ -27,5 +28,7 @@
         }
     },
     "suggest": {
+        "elixir-config" : "*",
+        "ext-intl" : "*"
     }
 }
