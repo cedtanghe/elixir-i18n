@@ -2,8 +2,6 @@
 
 namespace Elixir\I18N;
 
-use Elixir\I18N\Resource\ResourceInterface;
-
 /**
  * @author Cédric Tanghe <ced.tanghe@gmail.com>
  */
@@ -12,12 +10,12 @@ class TextDomain
     /**
      * @var string
      */
-    protected $locale;
-
+    protected $domain;
+    
     /**
-     * @var callable
+     * @var string
      */
-    protected $pluralRule;
+    protected $locale;
     
     /**
      * @var array
@@ -35,14 +33,21 @@ class TextDomain
     protected $resources = [];
 
     /**
+     * @param string $domain
      * @param string $locale
-     * @param callable $pluralRule
-     * @throws \InvalidArgumentException
      */
-    public function __construct($locale, callable $pluralRule = null)
+    public function __construct($domain, $locale)
     {
+        $this->domain = $domain;
         $this->locale = $locale;
-        $this->pluralRule = $pluralRule ?: PluralForms::get($this->locale)['plural'];
+    }
+    
+    /**
+     * @return string
+     */
+    public function getDomain() 
+    {
+        return $this->domain;
     }
     
     /**
@@ -54,45 +59,97 @@ class TextDomain
     }
     
     /**
-     * @return callable
+     * @return boolean
      */
-    public function getPluralRule() 
+    public function isResourcesLoaded()
     {
-        return $this->pluralRule;
+        foreach ($this->resources as &$data)
+        {
+            if ($data['loaded'])
+            {
+                return false;
+            }
+        }
+        
+        return true;
     }
     
     /**
-     * @return boolean
+     * @return array
      */
-    public static function isResourcesLoaded()
+    public function getResources()
     {
-        return !in_array(false, array_values($this->resources));
+        $resources = [];
+        
+        foreach ($this->resources as $data)
+        {
+            $resources[] = $data['resource'];
+        }
+        
+        return $resources;
+    }
+    
+    /**
+     * @param callable|string $resource
+     */
+    public function addResource($resource)
+    {
+        $this->resources[] = [
+            'resource' => $resource,
+            'loaded' => false
+        ];
+    }
+    
+    /**
+     * @return void
+     */
+    public function loadResources()
+    {
+        if ($this->isResourcesLoaded())
+        {
+            return;
+        }
+        
+        foreach ($this->resources as &$data)
+        {
+            if ($data['loaded'])
+            {
+                continue;
+            }
+
+            $this->loadResource($data['resource']);
+            $data['loaded'] = true;
+        }
+    }
+    
+    protected function loadResource($resource)
+    {
+        // Todo
     }
     
     /**
      * @param string $id
-     * @param string $textDomain
      * @return boolean
      */
-    public function hasMessage($id, $textDomain)
+    public function hasMessage($id)
     {
-        if (isset($this->messages[$textDomain][$id]))
+        if (isset($this->messages[$id]))
         {
             return true;
         }
         else if (!$this->isResourcesLoaded())
         {
-            foreach ($this->resources as $resource => &$data)
+            foreach ($this->resources as &$data)
             {
                 if ($data['loaded'])
                 {
                     continue;
                 }
                 
-                $this->loadResource($resource);
+                $this->loadResource($data['resource']);
                 $data['loaded'] = true;
                 
-                if (isset($this->messages[$textDomain][$id]))
+                if (isset($this->messages[$id]))
                 {
                     return true;
                 }
@@ -109,7 +166,7 @@ class TextDomain
      */
     public function getMessage($id, $default = null)
     {
-        return $this->hasMessage($id) ? $this->messages[$id] : call_user_func($default);
+        return $this->hasMessage($id) ? $this->messages[$id] : (is_callable($default) ? call_user_func($default) : $default);
     }
     
     /**
@@ -143,58 +200,5 @@ class TextDomain
     public function setMessages(array $messages)
     {
         $this->messages = $messages;
-    }
-    
-    /**
-     * @return array
-     */
-    public function getResources()
-    {
-        $resources = [];
-        
-        foreach ($this->resources as $data)
-        {
-            $resources[] = $data['resource'];
-        }
-        
-        return $resources;
-    }
-    
-    /**
-     * @param \Elixir\I18N\ResourceInterface $resource
-     */
-    public function addResource(ResourceInterface $resource)
-    {
-        $this->resources[$resource->__toString()] = [
-            'resource' => $resource,
-            'loaded' => false
-        ];
-    }
-    
-    /**
-     * @return void
-     */
-    public function loadResources()
-    {
-        if ($this->isResourcesLoaded())
-        {
-            return;
-        }
-        
-        foreach ($this->resources as $resource => &$data)
-        {
-            if ($data['loaded'])
-            {
-                continue;
-            }
-
-            $this->loadResource($resource);
-            $data['loaded'] = true;
-        }
-    }
-    
-    protected function loadResource($resource)
-    {
-        // Todo
     }
 }
