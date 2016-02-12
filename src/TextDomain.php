@@ -122,11 +122,6 @@ class TextDomain
         }
     }
     
-    protected function loadResource($resource)
-    {
-        // Todo
-    }
-    
     /**
      * @param string $id
      * @return boolean
@@ -200,5 +195,79 @@ class TextDomain
     public function setMessages(array $messages)
     {
         $this->messages = $messages;
+    }
+    
+    /**
+     * @param string $meta
+     * @return boolean
+     */
+    public function hasMetadata($meta)
+    {
+        return isset($this->metadata[$meta]);
+    }
+    
+    /**
+     * @param string $meta
+     * @param mixed $default
+     * @return mixed
+     */
+    public function getMetadata($meta, $default = null)
+    {
+        return isset($this->metadata[$meta]) ? $this->metadata[$meta] : (is_callable($default) ? call_user_func($default) : $default);
+    }
+    
+    /**
+     * @param string $meta
+     * @param mixed $value
+     */
+    public function setMetadata($meta, $value)
+    {
+        $this->metadata[$meta] = $value;
+    }
+    
+    /**
+     * @param string $meta
+     */
+    public function removeMetadata($meta)
+    {
+        unset($this->metadata[$meta]);
+    }
+
+    /**
+     * @return array
+     */
+    public function allMetadata()
+    {
+        return $this->metadata;
+    }
+    
+    /**
+     * @param array $metadata
+     */
+    public function replaceMetadata(array $metadata)
+    {
+        $this->metadata = $metadata;
+    }
+    
+    /**
+     * @param string|callable $resource
+     */
+    protected function loadResource($resource)
+    {
+        // Todo
+    }
+    
+    /**
+     * @ignore
+     */
+    public function __debugInfo()
+    {
+        return [
+            'locale' => $this->getLocale(),
+            'domain' => $this->getDomain(),
+            'messages' => $this->getMessages(),
+            'metadata' => $this->allMetadata(),
+            'resources' => $this->getResources()
+        ];
     }
 }
