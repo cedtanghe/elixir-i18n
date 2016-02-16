@@ -2,6 +2,8 @@
 
 namespace Elixir\I18N;
 
+use Elixir\Config\Loader\LoaderFactory;
+
 /**
  * @author Cédric Tanghe <ced.tanghe@gmail.com>
  */
@@ -254,6 +256,22 @@ class TextDomain
      */
     protected function loadResource($resource)
     {
+        if (is_callable($resource))
+        {
+            $resource = call_user_func($resource);
+        }
+
+        if (is_array($resource))
+        {
+            foreach ($resource as $r)
+            {
+                $this->loadResource($r);
+            }
+        }
+
+        $loader = LoaderFactory::create($resource);
+        $data = $loader->load($resource);
+
         // Todo
     }
     
