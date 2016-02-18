@@ -15,7 +15,7 @@ class PluralForms
     /**
      * @see http://localization-guide.readthedocs.org/en/latest/l10n/pluralforms.html
      * @param string $locale
-     * @return array
+     * @return array|false
      */
     public static function get($locale)
     {
@@ -844,15 +844,7 @@ class PluralForms
                     }
                 ];
             default:
-                return 
-                [
-                    'rule' => 'nplurals=1; plural=0;',
-                    'nplurals' => 1,
-                    'plural' => function($n)
-                    {
-                        return 0;
-                    }
-                ];
+                return false;
         }
     }
     
