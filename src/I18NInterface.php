@@ -32,9 +32,9 @@ interface I18NInterface
     /**
      * @param string $singular
      * @param string $plural
-     * @param int $count
+     * @param int $number
      * @param array $options
      * @return string
      */
-    public function transPlural($singular, $plural, $count, array $options = []);
+    public function transPlural($singular, $plural, $number, array $options = []);
 }

@@ -27,22 +27,12 @@ class I18NEvent extends Event
     /**
      * @var integer
      */
-    protected $count;
-    
-    /**
-     * @var string
-     */
-    protected $domain;
-    
-    /**
-     * @var string
-     */
-    protected $locale;
+    protected $number;
     
     /**
      * @var array
      */
-    protected $extra;
+    protected $options;
     
     /**
      * {@inheritdoc}
@@ -54,17 +44,13 @@ class I18NEvent extends Event
         
         $params += [
             'message' => null,
-            'count' => 0,
-            'domain' => null,
-            'locale' => null,
-            'extra' => []
+            'number' => 0,
+            'options' => []
         ];
         
         $this->message = $params['message'];
-        $this->count = $params['count'];
-        $this->domain = $params['domain'];
-        $this->locale = $params['locale'];
-        $this->extra = $params['extra'];
+        $this->number = $params['number'];
+        $this->options = $params['options'];
     }
 
     /**
@@ -86,32 +72,16 @@ class I18NEvent extends Event
     /**
      * @return integer
      */
-    public function getCount()
+    public function getNumber()
     {
-        return $this->count;
-    }
-    
-    /**
-     * @return string
-     */
-    public function getDomain()
-    {
-        return $this->domain;
-    }
-    
-    /**
-     * @return string
-     */
-    public function getLocale()
-    {
-        return $this->locale;
+        return $this->number;
     }
     
     /**
      * @return array
      */
-    public function getExtra()
+    public function getOptions()
     {
-        return $this->extra;
+        return $this->options;
     }
 }

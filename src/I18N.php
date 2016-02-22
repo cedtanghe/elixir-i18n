@@ -128,9 +128,9 @@ class I18N implements I18NInterface, DispatcherInterface
      */
     public function translate($message, array $options = [])
     {
-        $locale = isset($options['locale']) ? $options['locale'] : $this->getLocale();
-        $domain = isset($options['domain']) ? $options['domain'] : self::DEFAULT_TEXT_DOMAIN;
-        $catalogue = $this->getCatalogue($locale);
+        $options['locale'] = isset($options['locale']) ? $options['locale'] : $this->getLocale();
+        $options['domain'] = isset($options['domain']) ? $options['domain'] : self::DEFAULT_TEXT_DOMAIN;
+        $catalogue = $this->getCatalogue($options['locale']);
         
         if (!$catalogue)
         {
@@ -138,14 +138,20 @@ class I18N implements I18NInterface, DispatcherInterface
         }
         else
         {
-            $translated = $catalogue->getMessage($message, $domain);
+            $translated = $catalogue->getMessage($message, $options['domain']);
         }
         
         if (!$translated)
         {
-            $event = new I18NEvent(I18NEvent::MISSING_TRANSLATION, ['message' => $message, 'domain' => $domain, 'locale' => $locale, 'extra' => $options]);
-            $this->dispatch($event);
+            $event = new I18NEvent(
+                I18NEvent::MISSING_TRANSLATION, 
+                [
+                    'message' => $message, 
+                    'options' => $options
+                ]
+            );
             
+            $this->dispatch($event);
             $translated = $event->getMessage() ?: $message;
         }
         
@@ -160,11 +166,11 @@ class I18N implements I18NInterface, DispatcherInterface
     /**
      * {@inheritdoc}
      */
-    public function transPlural($singular, $plural, $count, array $options = [])
+    public function transPlural($singular, $plural, $number, array $options = [])
     {
-        $locale = isset($options['locale']) ? $options['locale'] : $this->getLocale();
-        $domain = isset($options['domain']) ? $options['domain'] : self::DEFAULT_TEXT_DOMAIN;
-        $catalogue = $this->getCatalogue($locale);
+        $options['locale'] = isset($options['locale']) ? $options['locale'] : $this->getLocale();
+        $options['domain'] = isset($options['domain']) ? $options['domain'] : self::DEFAULT_TEXT_DOMAIN;
+        $catalogue = $this->getCatalogue($options['locale']);
         
         if (!$catalogue)
         {
@@ -172,7 +178,7 @@ class I18N implements I18NInterface, DispatcherInterface
         }
         else
         {
-            $translated = $catalogue->getMessage($singular, $domain);
+            $translated = $catalogue->getMessage($singular, $options['domain']);
         }
         
         if (!$translated)
@@ -181,10 +187,8 @@ class I18N implements I18NInterface, DispatcherInterface
                 I18NEvent::MISSING_PLURAL_TRANSLATION, 
                 [
                     'message' => [$singular, $plural], 
-                    'count' => $count,
-                    'domain' => $domain,
-                    'locale' => $locale,
-                    'extra' => $options
+                    'number' => $number,
+                    'options' => $options
                 ]
             );
             
@@ -193,7 +197,7 @@ class I18N implements I18NInterface, DispatcherInterface
         }
         
         // Pluralize
-        $rules = PluralForms::get($locale);
+        $rules = PluralForms::get($options['locale']);
 
         if (!$rules)
         {
@@ -217,7 +221,7 @@ class I18N implements I18NInterface, DispatcherInterface
             $rules = $rules['plural'];
         }
 
-        $id = $rules ? PluralForms::evaluate($count, $rules) : 0;
+        $id = $rules ? PluralForms::evaluate($number, $rules) : 0;
         $translated = isset($translated[$id]) ? $translated[$id] : ($id > 0 ? $plural : $singular);
 
         if (isset($options['%']))
