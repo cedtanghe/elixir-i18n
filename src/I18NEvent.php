@@ -40,6 +40,11 @@ class I18NEvent extends Event
     protected $locale;
     
     /**
+     * @var array
+     */
+    protected $extra;
+    
+    /**
      * {@inheritdoc}
      * @param array $params
      */
@@ -51,13 +56,15 @@ class I18NEvent extends Event
             'message' => null,
             'count' => 0,
             'domain' => null,
-            'locale' => null
+            'locale' => null,
+            'extra' => []
         ];
         
         $this->message = $params['message'];
         $this->count = $params['count'];
         $this->domain = $params['domain'];
         $this->locale = $params['locale'];
+        $this->extra = $params['extra'];
     }
 
     /**
@@ -98,5 +105,13 @@ class I18NEvent extends Event
     public function getLocale()
     {
         return $this->locale;
+    }
+    
+    /**
+     * @return array
+     */
+    public function getExtra()
+    {
+        return $this->extra;
     }
 }

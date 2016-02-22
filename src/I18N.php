@@ -26,6 +26,17 @@ class I18N implements I18NInterface, DispatcherInterface
     protected $catalogues = [];
     
     /**
+     * @param string $locale
+     */
+    public function __construct($locale = null) 
+    {
+        if ($locale)
+        {
+            $this->setLocale($locale);
+        }
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function setLocale($value)
@@ -41,7 +52,7 @@ class I18N implements I18NInterface, DispatcherInterface
         $this->locale = $this->locale ?: Locale::getDefault();
         return $this->locale;
     }
-    
+
     /**
      * @param string $locale
      * @return boolean
@@ -58,7 +69,7 @@ class I18N implements I18NInterface, DispatcherInterface
      */
     public function getCatalogue($locale, $default = null)
     {
-        if (!$this->hasCatalogue($locale))
+        if ($this->hasCatalogue($locale))
         {
             return $this->catalogues[$locale];
         }
@@ -68,11 +79,10 @@ class I18N implements I18NInterface, DispatcherInterface
     
     /**
      * @param Catalogue $catalogue
-     * @param string $locale
      */
-    public function addCatalogue(Catalogue $catalogue, $locale = null)
+    public function addCatalogue(Catalogue $catalogue)
     {
-        $locale = $locale ? ($catalogue->getLocale() ?: $this->getLocale()) : $this->getLocale();
+        $locale = $catalogue->getLocale();
         
         if ($this->hasCatalogue($locale))
         {
@@ -133,7 +143,7 @@ class I18N implements I18NInterface, DispatcherInterface
         
         if (!$translated)
         {
-            $event = new I18NEvent(I18NEvent::MISSING_TRANSLATION, ['message' => $message, 'domain' => $domain, 'locale' => $locale]);
+            $event = new I18NEvent(I18NEvent::MISSING_TRANSLATION, ['message' => $message, 'domain' => $domain, 'locale' => $locale, 'extra' => $options]);
             $this->dispatch($event);
             
             $translated = $event->getMessage() ?: $message;
@@ -173,7 +183,9 @@ class I18N implements I18NInterface, DispatcherInterface
                     'message' => [$singular, $plural], 
                     'count' => $count,
                     'domain' => $domain,
-                    'locale' => $locale]
+                    'locale' => $locale,
+                    'extra' => $options
+                ]
             );
             
             $this->dispatch($event);

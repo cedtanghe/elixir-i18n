@@ -146,7 +146,7 @@ class Catalogue
                         continue;
                     }
 
-                    $this->loadResource($data['resource']);
+                    $this->loadResource($data['resource'], $textdomain);
                     $data['loaded'] = true;
                 }
                 
@@ -160,24 +160,73 @@ class Catalogue
     
     /**
      * @param mixed $resource
+     * @param string $domain
      * @return array
      */
-    public function loadResource($resource)
+    public function loadResource($resource, $domain)
     {
         if (is_callable($resource))
         {
             return call_user_func_array($resource, [$this]);
         }
         
-        $loader = LoaderFactory::create($resource);
-        $messages = $loader->load($resource);
+        // Add loaders
+        $this->addDefaultLoaders();
         
-        foreach ($messages as $id => $translation)
+        $loader = LoaderFactory::create($resource);
+        $parsed = LoadParser::parse($loader->load($resource));
+        
+        foreach ($parsed['messages'] as $id => $translation)
         {
-            $this->addMessage($id, $translation, $textdomain);
+            $this->addMessage($id, $translation, $domain);
         }
         
-        return $messages;
+        return $parsed;
+    }
+    
+    /**
+     * @return void
+     */
+    protected function addDefaultLoaders()
+    {
+        if (!isset(LoaderFactory::$factories['MO']))
+        {
+            LoaderFactory::$factories['MO'] = function($config, $options)
+            {
+                if (strstr($config, '.mo'))
+                {
+                    // Todo
+                }
+                
+                return null;
+            };
+        }
+        
+        if (!isset(LoaderFactory::$factories['PO']))
+        {
+            LoaderFactory::$factories['PO'] = function($config, $options)
+            {
+                if(strstr($config, '.po'))
+                {
+                    // Todo
+                }
+                
+                return null;
+            };
+        }
+        
+        if (!isset(LoaderFactory::$factories['CSV']))
+        {
+            LoaderFactory::$factories['CSV'] = function($config, $options)
+            {
+                if(strstr($config, '.csv'))
+                {
+                    // Todo
+                }
+                
+                return null;
+            };
+        }
     }
     
     /**
@@ -200,8 +249,8 @@ class Catalogue
                     {
                         continue;
                     }
-
-                    $this->loadResource($data['resource']);
+                    
+                    $this->loadResource($data['resource'], $domain);
                     $data['loaded'] = true;
 
                     if (isset($this->messages[$domain][$id]))
