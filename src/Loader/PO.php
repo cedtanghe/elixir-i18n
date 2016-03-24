@@ -54,7 +54,7 @@ class PO implements LoaderInterface
                     foreach ($parser->getHeaders() as $rawHeader) 
                     {
                         list($header, $content) = explode(':', $rawHeader, 2);
-                        $metadata[$header] = $content;
+                        $metadata[$header] = substr($content, -3) === '\n"' ? substr($content, 0, -3) : $content;
                     }
                     
                     return [
