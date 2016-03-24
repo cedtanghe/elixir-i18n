@@ -29,16 +29,9 @@ class Locale
             else 
             {
                 $code = explode(';', $header);
-                
-                if (isset($code['0']))
-                {
-                    $code = explode(',', $code['0']);
-                    
-                    if (isset($code['0']))
-                    {
-                        return $code['0'];
-                    }
-                }
+                $code = explode(',', $code[0]);
+
+                return $code[0];
             }
         }
         

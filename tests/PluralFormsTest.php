@@ -2,6 +2,8 @@
 
 namespace Elixir\Test\I18N;
 
+use Elixir\I18N\Loader\MO;
+use Elixir\I18N\Loader\PO;
 use Elixir\I18N\PluralForms;
 
 class PluralFormsTest extends \PHPUnit_Framework_TestCase
@@ -36,20 +38,19 @@ class PluralFormsTest extends \PHPUnit_Framework_TestCase
     
     public function testPO()
     {
-        $fileHandler = new \Sepia\FileHandler(__DIR__ . '/centralesupelec.en-AU.po');
-        $poParser = new \Sepia\PoParser($fileHandler);
-        $entries  = $poParser->parse();
+        $poParser = new PO();
+        $data  = $poParser->load(__DIR__ . '/en.po');
         
-        print_r($entries['@count jour']);
+        print_r($data['messages']['@count jour']);
+        print_r($data['metadata']);
     }
     
     public function testMO()
     {
-        include_once 'Gettext.php';
+        $moParser = new MO();
+        $data  = $moParser->load(__DIR__ . '/en.mo');
         
-        $moParser = new \Gettext();
-        $entries  = $moParser->load(__DIR__ . '/centralesupelec.en-AU.mo');
-        
-        print_r($entries['@count jour']);
+        print_r($data['messages']['@count jour']);
+        print_r($data['metadata']);
     }
 }

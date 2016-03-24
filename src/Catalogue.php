@@ -3,12 +3,45 @@
 namespace Elixir\I18N;
 
 use Elixir\Config\Loader\LoaderFactory;
+use Elixir\I18N\Loader\MO;
 
 /**
  * @author Cédric Tanghe <ced.tanghe@gmail.com>
  */
 class Catalogue 
 {
+    /**
+     * @return void
+     */
+    public static function addDefaultLoaders()
+    {
+        if (!isset(LoaderFactory::$factories['MO']))
+        {
+            LoaderFactory::$factories['MO'] = function($config, $options)
+            {
+                if (strstr($config, '.mo'))
+                {
+                    return new MO();
+                }
+                
+                return null;
+            };
+        }
+        
+        if (!isset(LoaderFactory::$factories['CSV']))
+        {
+            LoaderFactory::$factories['CSV'] = function($config, $options)
+            {
+                if(strstr($config, '.csv'))
+                {
+                    // Todo
+                }
+                
+                return null;
+            };
+        }
+    }
+    
     /**
      * @var string
      */
@@ -127,8 +160,9 @@ class Catalogue
     
     /**
      * @param string $domain
+     * @param boolean $addMetadata
      */
-    public function loadResources($domain = null)
+    public function loadResources($domain = null, $addMetadata = false)
     {
         if ($this->isResourcesLoaded($domain))
         {
@@ -146,7 +180,7 @@ class Catalogue
                         continue;
                     }
 
-                    $this->loadResource($data['resource'], $textdomain);
+                    $this->loadResource($data['resource'], $textdomain, $addMetadata);
                     $data['loaded'] = true;
                 }
                 
@@ -161,17 +195,15 @@ class Catalogue
     /**
      * @param mixed $resource
      * @param string $domain
+     * @param boolean $addMetadata
      * @return array
      */
-    public function loadResource($resource, $domain)
+    public function loadResource($resource, $domain, $addMetadata = false)
     {
         if (is_callable($resource))
         {
             return call_user_func_array($resource, [$this]);
         }
-        
-        // Add loaders
-        $this->addDefaultLoaders();
         
         $loader = LoaderFactory::create($resource);
         $parsed = LoadParser::parse($loader->load($resource));
@@ -181,52 +213,15 @@ class Catalogue
             $this->addMessage($id, $translation, $domain);
         }
         
+        if ($addMetadata)
+        {
+            foreach ($parsed['metadata'] as $meta => $value)
+            {
+                $this->setMetadata($meta, $value);
+            }
+        }
+        
         return $parsed;
-    }
-    
-    /**
-     * @return void
-     */
-    protected function addDefaultLoaders()
-    {
-        if (!isset(LoaderFactory::$factories['MO']))
-        {
-            LoaderFactory::$factories['MO'] = function($config, $options)
-            {
-                if (strstr($config, '.mo'))
-                {
-                    // Todo
-                }
-                
-                return null;
-            };
-        }
-        
-        if (!isset(LoaderFactory::$factories['PO']))
-        {
-            LoaderFactory::$factories['PO'] = function($config, $options)
-            {
-                if(strstr($config, '.po'))
-                {
-                    // Todo
-                }
-                
-                return null;
-            };
-        }
-        
-        if (!isset(LoaderFactory::$factories['CSV']))
-        {
-            LoaderFactory::$factories['CSV'] = function($config, $options)
-            {
-                if(strstr($config, '.csv'))
-                {
-                    // Todo
-                }
-                
-                return null;
-            };
-        }
     }
     
     /**

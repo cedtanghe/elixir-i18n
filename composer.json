@@ -1,7 +1,8 @@
 {
     "name": "elixir/elixir-i18n",
-    "description": "Component stdlib",
+    "description": "Component I18N",
     "version": "1.0.0",
+    "minimum-stability": "dev",
     "license": "BSD-3-Clause",
     "keywords": [
         "elixir",
@@ -9,11 +10,19 @@
     ],
     "homepage": "https://github.com/cedtanghe/elixir-i18n",
     "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/cedtanghe/elixir-dispatcher"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/cedtanghe/elixir-config"
+        }
     ],
     "require": {
         "php": ">=5.4",
-        "elixir-dispatcher" : "*",
-        "elixir-config" : "*"
+        "elixir/elixir-dispatcher" : "*",
+        "elixir/elixir-config" : "*"
     },
     "require-dev": {
         "phpunit/PHPUnit": "~4.0",
