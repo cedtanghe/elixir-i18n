@@ -41,8 +41,14 @@ class PluralFormsTest extends \PHPUnit_Framework_TestCase
         $poParser = new PO();
         $data  = $poParser->load(__DIR__ . '/en.po');
         
-        print_r($data['messages']['@count jour']);
-        print_r($data['metadata']);
+        $this->assertArrayHasKey('messages', $data);
+        $this->assertArrayHasKey('@count jour', $data['messages']);
+        $this->assertEquals('@count day', $data['messages']['@count jour'][0]);
+        $this->assertEquals('@count days', $data['messages']['@count jour'][1]);
+        
+        $this->assertArrayHasKey('metadata', $data);
+        $this->assertArrayHasKey('Plural-Forms', $data['metadata']);
+        $this->assertEquals('nplurals=2; plural=(n!=1);', $data['metadata']['Plural-Forms']);
     }
     
     public function testMO()
@@ -50,7 +56,13 @@ class PluralFormsTest extends \PHPUnit_Framework_TestCase
         $moParser = new MO();
         $data  = $moParser->load(__DIR__ . '/en.mo');
         
-        print_r($data['messages']['@count jour']);
-        print_r($data['metadata']);
+        $this->assertArrayHasKey('messages', $data);
+        $this->assertArrayHasKey('@count jour', $data['messages']);
+        $this->assertEquals('@count day', $data['messages']['@count jour'][0]);
+        $this->assertEquals('@count days', $data['messages']['@count jour'][1]);
+        
+        $this->assertArrayHasKey('metadata', $data);
+        $this->assertArrayHasKey('Plural-Forms', $data['metadata']);
+        $this->assertEquals('nplurals=2; plural=(n!=1);', $data['metadata']['Plural-Forms']);
     }
 }

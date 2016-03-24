@@ -104,7 +104,7 @@ class MO implements LoaderInterface
             
             foreach ($rawHeaders as $rawHeader) 
             {
-                list($header, $content) = explode(':', $rawHeader, 2);
+                list($header, $content) = array_map('trim', explode(':', $rawHeader, 2));
                 $metadata[$header] = $content;
             }
             
