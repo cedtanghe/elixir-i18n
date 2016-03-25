@@ -6,9 +6,9 @@ use Elixir\I18N\Loader\MO;
 use Elixir\I18N\Loader\PO;
 use Elixir\I18N\PluralForms;
 
-class PluralFormsTest extends \PHPUnit_Framework_TestCase
+class I18NTest extends \PHPUnit_Framework_TestCase
 {
-    public function testParse()
+    public function testParsePluralForms()
     {
         // FR
         $parsed = PluralForms::parse('nplurals=2; plural=(n > 1);');
@@ -19,7 +19,7 @@ class PluralFormsTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('array', $parsed);
     }
     
-    public function testEvaluate()
+    public function testEvaluatePluralForms()
     {
         // FR
         $pluralForm = 'nplurals=2; plural=(n > 1);';
@@ -36,7 +36,7 @@ class PluralFormsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(3, PluralForms::evaluate(10, $plural));
     }
     
-    public function testPO()
+    public function testPOParser()
     {
         $poParser = new PO();
         $data  = $poParser->load(__DIR__ . '/en.po');
@@ -51,7 +51,7 @@ class PluralFormsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('nplurals=2; plural=(n!=1);', $data['metadata']['Plural-Forms']);
     }
     
-    public function testMO()
+    public function testMOParser()
     {
         $moParser = new MO();
         $data  = $moParser->load(__DIR__ . '/en.mo');

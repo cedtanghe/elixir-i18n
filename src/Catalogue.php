@@ -367,63 +367,50 @@ class Catalogue
     }
     
     /**
-     * @param Catalogue|array $data
+     * @param Catalogue $catalogue
      */
-    public function merge($data) 
+    public function merge(Catalogue $catalogue) 
     {
-        if ($data instanceof self) 
+        $messages = $catalogue->getMessages(null);
+        $resources = $catalogue->getResources(null, true);
+        $metadata = $catalogue->allMetadata();
+
+        $data = [
+            'messages' => $messages,
+            'resources' => [],
+            'metadata' => $metadata
+        ];
+
+        foreach ($resources as $textdomain => $list)
         {
-            $catalogue = $data;
-            $messages = $catalogue->getMessages(null);
-            $resources = $catalogue->getResources(null, true);
-            $metadata = $catalogue->allMetadata();
-            
-            $data = [
-                'messages' => $messages,
-                'resources' => [],
-                'metadata' => $metadata
-            ];
-            
-            foreach ($resources as $textdomain => $list)
+            foreach ($list as $d)
             {
-                foreach ($list as $d)
+                if ($d['loaded'])
                 {
-                    if ($d['loaded'])
-                    {
-                        continue;
-                    }
-                    
-                    $data['resources'][$textdomain][] = $d['resource'];
+                    continue;
                 }
+
+                $data['resources'][$textdomain][] = $d['resource'];
             }
         }
 
-        if (isset($data['messages']))
+        foreach ($data['messages'] as $textdomain => $list)
         {
-            foreach ($data['messages'] as $textdomain => $list)
+            foreach ($list as $id => $translation)
             {
-                foreach ($list as $id => $translation)
-                {
-                    $this->addMessage($id, $translation, $textdomain);
-                }
+                $this->addMessage($id, $translation, $textdomain);
             }
         }
         
-        if (isset($data['resources']))
+        foreach ($data['resources'] as $textdomain => $list)
         {
-            foreach ($data['resources'] as $textdomain => $list)
+            foreach ($list as $resource)
             {
-                foreach ($list as $resource)
-                {
-                    $this->addResource($resource, $textdomain);
-                }
+                $this->addResource($resource, $textdomain);
             }
         }
         
-        if (isset($data['metadata']))
-        {
-            $this->metadata = array_merge($this->metadata, $data['metadata']);
-        }
+        $this->metadata = array_merge($this->metadata, $data['metadata']);
     }
     
     /**
