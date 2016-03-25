@@ -3,43 +3,53 @@
 namespace Elixir\I18N;
 
 use Elixir\Config\Loader\LoaderFactory;
-use Elixir\I18N\Loader\MO;
+use Elixir\Config\Loader\LoaderFactoryAwareTrait;
+use Elixir\I18N\Loader\CSVLoader;
+use Elixir\I18N\Loader\MOLoader;
+use Elixir\I18N\Loader\POLoader;
+use Elixir\I18N\LoadParser;
 
 /**
  * @author Cédric Tanghe <ced.tanghe@gmail.com>
  */
 class Catalogue 
 {
+    use LoaderFactoryAwareTrait;
+    
     /**
-     * @return void
+     * @param LoaderFactory $factory
      */
-    public static function addDefaultLoaders()
+    public static function addDefaultLoaders(LoaderFactory $factory)
     {
-        if (!isset(LoaderFactory::$factories['MO']))
+        $factory->add('MO', function($config, $options)
         {
-            LoaderFactory::$factories['MO'] = function($config, $options)
+            if (strstr($config, '.mo'))
             {
-                if (strstr($config, '.mo'))
-                {
-                    return new MO();
-                }
-                
-                return null;
-            };
-        }
+                return new MOLoader();
+            }
+            
+            return null;
+        });
         
-        if (!isset(LoaderFactory::$factories['CSV']))
+        $factory->add('CSV', function($config, $options)
         {
-            LoaderFactory::$factories['CSV'] = function($config, $options)
+            if(strstr($config, '.csv'))
             {
-                if(strstr($config, '.csv'))
-                {
-                    // Todo
-                }
-                
-                return null;
-            };
-        }
+                new CSVLoader();
+            }
+            
+            return null;
+        });
+        
+        $factory->add('PO', function($config, $options)
+        {
+            if (strstr($config, '.po'))
+            {
+                return new POLoader();
+            }
+            
+            return null;
+        });
     }
     
     /**
@@ -205,7 +215,13 @@ class Catalogue
             return call_user_func_array($resource, [$this]);
         }
         
-        $loader = LoaderFactory::create($resource);
+        if (null === $this->loaderFactory)
+        {
+            $this->loaderFactory = new LoaderFactory();
+            self::addDefaultLoaders($this->loaderFactory);
+        }
+        
+        $loader = $this->loaderFactory->create($resource);
         $parsed = LoadParser::parse($loader->load($resource));
         
         foreach ($parsed['messages'] as $id => $translation)

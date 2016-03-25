@@ -7,7 +7,7 @@ use Elixir\Config\Loader\LoaderInterface;
 /**
  * @author Cédric Tanghe <ced.tanghe@gmail.com>
  */
-class MO implements LoaderInterface
+class MOLoader implements LoaderInterface
 {
     /**
      * @var resource

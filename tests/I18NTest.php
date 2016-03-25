@@ -2,8 +2,8 @@
 
 namespace Elixir\Test\I18N;
 
-use Elixir\I18N\Loader\MO;
-use Elixir\I18N\Loader\PO;
+use Elixir\I18N\Loader\MOLoader;
+use Elixir\I18N\Loader\POLoader;
 use Elixir\I18N\PluralForms;
 
 class I18NTest extends \PHPUnit_Framework_TestCase
@@ -38,7 +38,7 @@ class I18NTest extends \PHPUnit_Framework_TestCase
     
     public function testPOParser()
     {
-        $poParser = new PO();
+        $poParser = new POLoader();
         $data  = $poParser->load(__DIR__ . '/en.po');
         
         $this->assertArrayHasKey('messages', $data);
@@ -53,7 +53,7 @@ class I18NTest extends \PHPUnit_Framework_TestCase
     
     public function testMOParser()
     {
-        $moParser = new MO();
+        $moParser = new MOLoader();
         $data  = $moParser->load(__DIR__ . '/en.mo');
         
         $this->assertArrayHasKey('messages', $data);

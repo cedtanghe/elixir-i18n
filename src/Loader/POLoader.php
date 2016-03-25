@@ -9,7 +9,7 @@ use Sepia\PoParser;
 /**
  * @author Cédric Tanghe <ced.tanghe@gmail.com>
  */
-class PO implements LoaderInterface
+class POLoader implements LoaderInterface
 {
     /**
      * @var callable 
