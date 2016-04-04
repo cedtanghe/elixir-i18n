@@ -2,6 +2,7 @@
 
 namespace Elixir\I18N;
 
+use Elixir\Config\Cache\CacheableInterface;
 use Elixir\Config\Loader\LoaderFactory;
 use Elixir\Config\Loader\LoaderFactoryAwareTrait;
 use Elixir\Config\Writer\WriterFactory;
@@ -16,7 +17,7 @@ use Elixir\I18N\Writer\POWriter;
 /**
  * @author Cédric Tanghe <ced.tanghe@gmail.com>
  */
-class Catalogue
+class Catalogue implements CacheableInterface
 {
     use LoaderFactoryAwareTrait;
     
@@ -101,6 +102,11 @@ class Catalogue
      * @var array
      */
     protected $resources = [];
+    
+    /**
+     * @var CacheableInterface 
+     */
+    protected $cache;
 
     /**
      * @param string $locale
@@ -128,6 +134,57 @@ class Catalogue
     public function getDomains()
     {
         return array_unique(array_merge(array_keys($this->messages), array_keys($this->resources)));
+    }
+    
+    /**
+     * @param CacheableInterface $value
+     */
+    public function setCacheStrategy(CacheableInterface $value)
+    {
+        $this->cache = $value;
+    }
+    
+    /**
+     * @return CacheableInterface
+     */
+    public function getCacheStrategy()
+    {
+        return $this->cache;
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function loadCache()
+    {
+        if (null === $this->cache)
+        {
+            return false;
+        }
+        
+        $data = $this->cache->loadCache();
+        
+        if ($data)
+        {
+            $data = LoadParser::parse($data);
+            $this->messages = array_merge($this->messages, $data['messages']);
+            $this->metadata = array_merge($this->metadata, $data['metadata']);
+        }
+        
+        return $data;
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function cacheLoaded()
+    {
+        if (null === $this->cache)
+        {
+            return false;
+        }
+        
+        return $this->cache->cacheLoaded();
     }
 
     /**
@@ -201,6 +258,11 @@ class Catalogue
      */
     public function addResource($resource, array $options = [])
     {
+        if ($this->cacheLoaded() && $this->isFreshCache())
+        {
+            return true;
+        }
+        
         $domain = isset($options['domain']) ? $options['domain'] : I18NInterface::DEFAULT_TEXT_DOMAIN;
         unset($options['domain']);
         
@@ -469,6 +531,65 @@ class Catalogue
             ], 
             $file
         );
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function isFreshCache()
+    {
+        if (null === $this->cache)
+        {
+            return false;
+        }
+        
+        return $this->cache->isFreshCache();
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function exportToCache(array $data = null)
+    {
+        if (null === $this->cache)
+        {
+            return false;
+        }
+        
+        if ($data)
+        {
+            $data = LoadParser::parse($data);
+            $this->messages = array_merge($this->messages, $data['messages']);
+            $this->metadata = array_merge($this->metadata, $data['metadata']);
+        }
+        
+        return $this->cache->exportToCache($this->getExportableData());
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function invalidateCache()
+    {
+        if (null === $this->cache)
+        {
+            return false;
+        }
+        
+        return $this->cache->invalidateCache();
+    }
+    
+    /**
+     * @return array
+     */
+    protected function getExportableData()
+    {
+        $this->loadResources();
+        
+        return [
+            'messages' => $this->messages,
+            'metadata' => $this->metadata
+        ];
     }
     
     /**
