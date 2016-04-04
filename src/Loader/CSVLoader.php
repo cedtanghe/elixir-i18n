@@ -13,45 +13,23 @@ class CSVLoader implements LoaderInterface
     /**
      * @var string
      */
-    protected $delimiter = ';';
+    protected $delimiter;
     
     /**
      * @var string
      */
-    protected $enclosure = '"';
+    protected $enclosure;
     
     /**
-     * @param string $value
+     * @param string $delimiter
+     * @param string $enclosure
      */
-    public function setDelimiter($value)
+    public function __construct($delimiter = ';', $enclosure = '"')
     {
-        $this->delimiter = $value;
+        $this->delimiter = $delimiter;
+        $this->enclosure = $enclosure;
     }
     
-    /**
-     * @return string
-     */
-    public function getDelimiter()
-    {
-        return $this->delimiter;
-    }
-    
-    /**
-     * @param string $value
-     */
-    public function setEnclosure($value)
-    {
-        $this->enclosure = $value;
-    }
-    
-    /**
-     * @return string
-     */
-    public function getEnclosure()
-    {
-        return $this->enclosure;
-    }
-
     /**
      * {@inheritdoc}
      */

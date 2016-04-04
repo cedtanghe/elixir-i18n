@@ -36,19 +36,36 @@ class POLoader implements LoaderInterface
                     
                     $messages = [];
                     $metadata = [];
+                    $c = 0;
                     
                     foreach ($parser->getEntries() as $entry) 
                     {
+                        $msgid = current($entry['msgid']);
                         $msgstr = [];
-                        $i = 0;
                         
-                        while (isset($entry['msgstr[' . $i . ']']))
+                        if (isset($entry['msgid_plural']))
                         {
-                            $msgstr[] = current($entry['msgstr[' . $i . ']']);
-                            $i++;
+                            $i = 0;
+                        
+                            while (isset($entry['msgstr[' . $i . ']']))
+                            {
+                                $msgstr[] = current($entry['msgstr[' . $i . ']']);
+                                $i++;
+                            }
+                            
+                            $metadata['options']['msgid_plural'][$msgid] = current($entry['msgid_plural']);
+                        }
+                        else
+                        {
+                            $msgstr[] = current($entry['msgstr']);
                         }
                         
-                        $messages[current($entry['msgid'])] = $msgstr;
+                        if (isset($entry['reference']))
+                        {
+                            $metadata['options']['reference'][$msgid] = $entry['reference'];
+                        }
+                        
+                        $messages[$msgid] = $msgstr;
                     }
                     
                     foreach ($parser->getHeaders() as $rawHeader) 

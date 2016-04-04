@@ -4,22 +4,26 @@ namespace Elixir\I18N;
 
 use Elixir\Config\Loader\LoaderFactory;
 use Elixir\Config\Loader\LoaderFactoryAwareTrait;
+use Elixir\Config\Writer\WriterFactory;
+use Elixir\Config\Writer\WriterInterface;
 use Elixir\I18N\Loader\CSVLoader;
 use Elixir\I18N\Loader\MOLoader;
 use Elixir\I18N\Loader\POLoader;
 use Elixir\I18N\LoadParser;
+use Elixir\I18N\Writer\CSVWritter;
+use Elixir\I18N\Writer\POWriter;
 
 /**
  * @author Cédric Tanghe <ced.tanghe@gmail.com>
  */
-class Catalogue 
+class Catalogue
 {
     use LoaderFactoryAwareTrait;
     
     /**
      * @param LoaderFactory $factory
      */
-    public static function addDefaultLoaders(LoaderFactory $factory)
+    public static function addLoaderProvider(LoaderFactory $factory)
     {
         $factory->add('MO', function($config, $options)
         {
@@ -53,6 +57,32 @@ class Catalogue
     }
     
     /**
+     * @param WriterFactory $factory
+     */
+    public static function addWriterProvider(WriterFactory $factory)
+    {
+        $factory->add('CSV', function($file, $options)
+        {
+            if (strstr($file, '.csv'))
+            {
+                return new CSVWritter();
+            }
+            
+            return null;
+        });
+        
+        $factory->add('PO', function($file, $options)
+        {
+            if (strstr($file, '.po'))
+            {
+                return new POWriter();
+            }
+            
+            return null;
+        });
+    }
+    
+    /**
      * @var string
      */
     protected $locale;
@@ -74,10 +104,14 @@ class Catalogue
 
     /**
      * @param string $locale
+     * @param array $messages
+     * @param array $metadata
      */
-    public function __construct($locale)
+    public function __construct($locale, array $messages = [], array $metadata = [])
     {
         $this->locale = $locale;
+        $this->messages = $messages;
+        $this->metadata = $metadata;
     }
     
     /**
@@ -158,22 +192,28 @@ class Catalogue
     
     /**
      * @param mixed $resource
-     * @param string $domain
+     * @param array $options
      */
-    public function addResource($resource, $domain = I18NInterface::DEFAULT_TEXT_DOMAIN)
+    public function addResource($resource, array $options = [])
     {
+        $domain = isset($options['domain']) ? $options['domain'] : I18NInterface::DEFAULT_TEXT_DOMAIN;
+        unset($options['domain']);
+        
         $this->resources[$domain][] = [
             'resource' => $resource,
+            'options' => $options,
             'loaded' => false
         ];
     }
     
     /**
-     * @param string $domain
-     * @param boolean $addMetadata
+     * @param array $options
      */
-    public function loadResources($domain = null, $addMetadata = false)
+    public function loadResources(array $options = [])
     {
+        $domain = isset($options['domain']) ? $options['domain'] : null;
+        unset($options['domain']);
+        
         if ($this->isResourcesLoaded($domain))
         {
             return;
@@ -190,7 +230,12 @@ class Catalogue
                         continue;
                     }
 
-                    $this->loadResource($data['resource'], $textdomain, $addMetadata);
+                    $this->loadResource(
+                        $data['resource'], 
+                        $textdomain, 
+                        $data['options'] + $options
+                    );
+                    
                     $data['loaded'] = true;
                 }
                 
@@ -205,10 +250,10 @@ class Catalogue
     /**
      * @param mixed $resource
      * @param string $domain
-     * @param boolean $addMetadata
+     * @param array $options
      * @return array
      */
-    public function loadResource($resource, $domain, $addMetadata = false)
+    public function loadResource($resource, $domain, array $options = [])
     {
         if (is_callable($resource))
         {
@@ -218,10 +263,10 @@ class Catalogue
         if (null === $this->loaderFactory)
         {
             $this->loaderFactory = new LoaderFactory();
-            self::addDefaultLoaders($this->loaderFactory);
+            self::addLoaderProvider($this->loaderFactory);
         }
         
-        $loader = $this->loaderFactory->create($resource);
+        $loader = $this->loaderFactory->create($resource, $options);
         $parsed = LoadParser::parse($loader->load($resource));
         
         foreach ($parsed['messages'] as $id => $translation)
@@ -229,7 +274,7 @@ class Catalogue
             $this->addMessage($id, $translation, $domain);
         }
         
-        if ($addMetadata)
+        if (isset($options['load-metadata']) && $options['load-metadata'])
         {
             foreach ($parsed['metadata'] as $meta => $value)
             {
@@ -383,50 +428,44 @@ class Catalogue
     }
     
     /**
+     * @param WriterInterface $writer
+     * @param string $file
+     * @param string $domain
+     * @return boolean
+     */
+    public function export(WriterInterface $writer, $file, $domain = I18NInterface::DEFAULT_TEXT_DOMAIN)
+    {
+        $this->loadResources(['domain' => $domain]);
+        
+        return $writer->export([
+                'messages' => $this->getMessages($domain),
+                'metadata' => $this->allMetadata()
+            ], 
+            $file
+        );
+    }
+    
+    /**
      * @param Catalogue $catalogue
      */
     public function merge(Catalogue $catalogue) 
     {
-        $messages = $catalogue->getMessages(null);
         $resources = $catalogue->getResources(null, true);
-        $metadata = $catalogue->allMetadata();
 
-        $data = [
-            'messages' => $messages,
-            'resources' => [],
-            'metadata' => $metadata
-        ];
-
-        foreach ($resources as $textdomain => $list)
+        foreach ($resources as &$group)
         {
-            foreach ($list as $d)
+            foreach ($group as $key => $value)
             {
-                if ($d['loaded'])
+                if ($v['loaded'])
                 {
-                    continue;
+                    unset($group[$key]);
                 }
-
-                $data['resources'][$textdomain][] = $d['resource'];
-            }
-        }
-
-        foreach ($data['messages'] as $textdomain => $list)
-        {
-            foreach ($list as $id => $translation)
-            {
-                $this->addMessage($id, $translation, $textdomain);
             }
         }
         
-        foreach ($data['resources'] as $textdomain => $list)
-        {
-            foreach ($list as $resource)
-            {
-                $this->addResource($resource, $textdomain);
-            }
-        }
-        
-        $this->metadata = array_merge($this->metadata, $data['metadata']);
+        $this->resources = array_merge($this->resources, $resources);
+        $this->messages = array_merge($this->messages, $catalogue->getMessages(null));
+        $this->metadata = array_merge($this->metadata, $catalogue->allMetadata());
     }
     
     /**

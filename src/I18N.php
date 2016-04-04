@@ -124,6 +124,28 @@ class I18N implements I18NInterface, DispatcherInterface
     }
     
     /**
+     * @param mixed $resource
+     * @param array $options
+     */
+    public function addResource($resource, array $options = [])
+    {
+        $locale = isset($options['locale']) ? $options['locale'] : $this->getLocale();
+        unset($options['locale']);
+        
+        if ($this->hasCatalogue($locale))
+        {
+            $catalogue = $this->getCatalogue($locale);
+        }
+        else
+        {
+            $catalogue = new Catalogue($locale);
+            $this->addCatalogue($catalogue);
+        }
+        
+        $catalogue->addResource($resource, $options);
+    }
+    
+    /**
      * {@inheritdoc}
      */
     public function translate($message, array $options = [])
@@ -230,5 +252,16 @@ class I18N implements I18NInterface, DispatcherInterface
         }
         
         return $translated;
+    }
+    
+    /**
+     * @ignore
+     */
+    public function __debugInfo()
+    {
+        return [
+            'locale' => $this->getLocale(),
+            'catalogues' => $this->getCatalogues()
+        ];
     }
 }
