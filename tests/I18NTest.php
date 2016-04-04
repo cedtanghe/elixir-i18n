@@ -2,9 +2,11 @@
 
 namespace Elixir\Test\I18N;
 
+use Elixir\I18N\Catalogue;
 use Elixir\I18N\Loader\MOLoader;
 use Elixir\I18N\Loader\POLoader;
 use Elixir\I18N\PluralForms;
+use Elixir\I18N\Writer\POWriter;
 
 class I18NTest extends \PHPUnit_Framework_TestCase
 {
@@ -39,7 +41,7 @@ class I18NTest extends \PHPUnit_Framework_TestCase
     public function testPOParser()
     {
         $poParser = new POLoader();
-        $data  = $poParser->load(__DIR__ . '/en.po');
+        $data  = $poParser->load(__DIR__ . '/resources/en.po');
         
         $this->assertArrayHasKey('messages', $data);
         $this->assertArrayHasKey('@count jour', $data['messages']);
@@ -54,7 +56,7 @@ class I18NTest extends \PHPUnit_Framework_TestCase
     public function testMOParser()
     {
         $moParser = new MOLoader();
-        $data  = $moParser->load(__DIR__ . '/en.mo');
+        $data  = $moParser->load(__DIR__ . '/resources/en.mo');
         
         $this->assertArrayHasKey('messages', $data);
         $this->assertArrayHasKey('@count jour', $data['messages']);
@@ -64,5 +66,26 @@ class I18NTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('metadata', $data);
         $this->assertArrayHasKey('Plural-Forms', $data['metadata']);
         $this->assertEquals('nplurals=2; plural=(n!=1);', $data['metadata']['Plural-Forms']);
+    }
+    
+    public function testCatalogue()
+    {
+        $catalogue = new Catalogue('en');
+        $catalogue->addResource(__DIR__ . '/resources/export.po');
+        $catalogue->loadResources(['load-metadata' => true]);
+        
+        $this->assertCount(2, $catalogue->getMessage('@count jour'));
+    }
+    
+    public function testPOExport()
+    {
+        @unlink(__DIR__ . '/resources/export.po');
+        
+        $catalogue = new Catalogue('en');
+        $catalogue->addResource(__DIR__ . '/resources/en.po');
+        $catalogue->loadResources(['load-metadata' => true]);
+        $catalogue->export(new POWriter(), __DIR__ . '/resources/export.po');
+        
+        $this->assertFileExists(__DIR__ . '/resources/export.po');
     }
 }

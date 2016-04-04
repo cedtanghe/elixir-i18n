@@ -138,22 +138,27 @@ class Catalogue
     {
         if (null !== $domain && isset($this->resources[$domain]))
         {
-            $domains = [$this->resources[$domain]];
+            $domains = $this->resources[$domain];
         }
         else
         {
-            $domains = array_values($this->resources);
+            $domains = [];
+            
+            foreach ($this->resources as $domain => $resources)
+            {
+                $domains = array_merge($domains, $resources);
+            }
         }
         
         foreach ($domains as $data)
         {
             if ($data['loaded'])
             {
-                return false;
+                return true;
             }
         }
         
-        return true;
+        return false;
     }
     
     /**
@@ -278,8 +283,27 @@ class Catalogue
         {
             foreach ($parsed['metadata'] as $meta => $value)
             {
+                if ($meta === 'options')
+                {
+                    continue;
+                }
+                
                 $this->setMetadata($meta, $value);
             }
+        }
+        
+        if (isset($parsed['metadata']['options']))
+        {
+            $options = $this->getMetadata('options', []);
+            
+            if (!isset($options[$domain]))
+            {
+                $options[$domain] = [];
+            }
+            
+            $options[$domain] += $parsed['metadata']['options'];
+            
+            $this->setMetadata('options', $options);
         }
         
         return $parsed;
@@ -438,6 +462,8 @@ class Catalogue
         $this->loadResources(['domain' => $domain]);
         
         return $writer->export([
+                'locale' => $this->getLocale(),
+                'domain' => $domain,
                 'messages' => $this->getMessages($domain),
                 'metadata' => $this->allMetadata()
             ], 
@@ -476,7 +502,7 @@ class Catalogue
         return [
             'locale' => $this->getLocale(),
             'messages' => $this->getMessages(),
-            'metadata' => array_keys($this->allMetadata()),
+            'metadata' => $this->allMetadata(),
             'has_resources' => $this->isResourcesLoaded(),
             'domains' => $this->getDomains()
         ];

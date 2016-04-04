@@ -3,6 +3,7 @@
 namespace Elixir\I18N\Writer;
 
 use Elixir\Config\Writer\WriterInterface;
+use Elixir\I18N\PluralForms;
 use Sepia\PoParser;
 
 /**
@@ -28,11 +29,100 @@ class POWriter implements WriterInterface
         {
             if (class_exists('\Sepia\PoParser'))
             {
-                $this->setPOParser(function($messages, $metadata)
+                $this->setPOParser(function($locale, $domain, $messages, $metadata)
                 {
                     $parser = new PoParser();
                     
-                    // Todo
+                    // Headers
+                    $headers = [];
+                    $metadata['Language'] = $locale;
+                    
+                    if (!isset($metadata['X-Generator']))
+                    {
+                        $metadata['X-Generator'] = 'Elixir';
+                    }
+                    
+                    if (!isset($metadata['PO-Revision-Date']))
+                    {
+                        $metadata['PO-Revision-Date'] = date('Y-m-d H:iO');
+                    }
+                    
+                    if (!isset($metadata['MIME-Version']))
+                    {
+                        $metadata['MIME-Version'] = '1.0';
+                    }
+                    
+                    if (!isset($metadata['Content-Type']))
+                    {
+                        $metadata['Content-Type'] = 'text/plain; charset=utf8';
+                    }
+                    
+                    if (!isset($metadata['Content-Transfert-Encoding']))
+                    {
+                        $metadata['Content-Transfert-Encoding'] = '8bit';
+                    }
+                    
+                    if (!isset($metadata['Plural-Forms']) || is_callable($metadata['Plural-Forms']))
+                    {
+                        $pluralForms = PluralForms::get($locale);
+                        
+                        if ($pluralForms)
+                        {
+                            $metadata['Plural-Forms'] = $pluralForms['rule'];
+                        }
+                    }
+                    
+                    foreach ($metadata as $key => $value)
+                    {
+                        if ($key === 'options')
+                        {
+                            continue;
+                        }
+                        
+                        $headers[] = sprintf('"%s: %s\n"', $key, $value);
+                    }
+                    
+                    $parser->setHeaders($headers);
+                    
+                    // Entries
+                    foreach ($messages as $id => $translation)
+                    {
+                        $entry = ['msgid' => $id];
+                        $translation = (array)$translation;
+                        
+                        if (count($translation) <= 1)
+                        {
+                            $entry['msgstr'] = $translation;
+                        }
+                        else
+                        {
+                            if (isset($metadata['options'][$domain]['msgid_plural'][$id]))
+                            {
+                                $msgidPlural = $metadata['options'][$domain]['msgid_plural'][$id];
+                            }
+                            else
+                            {
+                                $msgidPlural = $id;
+                            }
+                            
+                            $entry['msgid_plural'] = (array)$msgidPlural;
+                            $i = 0;
+                            
+                            foreach ($translation as $t)
+                            {
+                                $entry['msgstr[' . $i++ . ']'] = (array)$t;
+                            }
+                        }
+                        
+                        if (isset($metadata['options'][$domain]['reference'][$id]))
+                        {
+                            $entry['reference'] = (array)$metadata['options'][$domain]['reference'][$id];
+                        }
+                        
+                        $parser->setEntry($id, $entry);
+                    }
+                    
+                    return $parser->compile();
                 });
             }
         }
@@ -59,16 +149,15 @@ class POWriter implements WriterInterface
      */
     public function dump(array $data) 
     {
-        $messages = $data;
-        $metadata = [];
-        
-        if (isset($data['messages']) && isset($data['metadata']))
-        {
-            $messages = $data['messages'];
-            $metadata = $data['metadata'];
-        }
-        
-        return call_user_func_array($this->getPOParser(), [$messages, $metadata]);
+        return call_user_func_array(
+            $this->getPOParser(), 
+            [
+                $data['locale'], 
+                $data['domain'], 
+                $data['messages'], 
+                $data['metadata']
+            ]
+        );
     }
     
     /**
