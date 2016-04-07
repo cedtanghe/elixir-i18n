@@ -587,6 +587,8 @@ class Catalogue implements CacheableInterface
         $this->loadResources();
         
         return [
+            'locale' => $this->getLocale(),
+            'domain' => null,
             'messages' => $this->messages,
             'metadata' => $this->metadata
         ];
