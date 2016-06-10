@@ -3,7 +3,7 @@
 namespace Elixir\I18N\Loader;
 
 use Elixir\Config\Loader\LoaderInterface;
-use Elixir\STDLib\CSVUtils;
+use function Elixir\STDLib\csv_to_array;
 
 /**
  * @author Cédric Tanghe <ced.tanghe@gmail.com>
@@ -35,7 +35,7 @@ class CSVLoader implements LoaderInterface
      */
     public function load($config)
     {
-        $result = CSVUtils::CSVToArray($config, false, $this->delimiter, $this->enclosure);
+        $result = csv_to_array($config, false, $this->delimiter, $this->enclosure);
         $messages = [];
         
         foreach ($result as $row)
