@@ -13,53 +13,48 @@ class MOLoader implements LoaderInterface
      * @var resource
      */
     protected $file;
-    
+
     /**
-     * @var boolean
+     * @var bool
      */
     protected $littleEndian;
-    
+
     /**
      * {@inheritdoc}
+     *
      * @throws \InvalidArgumentException
      */
     public function load($config)
     {
         $this->file = fopen($config, 'rb');
-        
+
         $magic = fread($this->file, 4);
-        
-        if ($magic === "\x95\x04\x12\xde")
-        {
+
+        if ($magic === "\x95\x04\x12\xde") {
             $this->littleEndian = false;
-        } 
-        else if($magic === "\xde\x12\x04\x95") 
-        {
+        } elseif ($magic === "\xde\x12\x04\x95") {
             $this->littleEndian = true;
-        } 
-        else
-        {
+        } else {
             fclose($this->file);
             throw new \InvalidArgumentException('This is not a valid mo file.');
         }
-        
+
         // Major revision
         $this->readInteger() >> 16;
-        
+
         $numStrings = $this->readInteger();
         $originalStringTableOffset = $this->readInteger();
         $translationStringTableOffset = $this->readInteger();
-        
+
         fseek($this->file, $originalStringTableOffset);
         $originalStringTable = $this->readIntegerList(2 * $numStrings);
-        
+
         fseek($this->file, $translationStringTableOffset);
         $translationStringTable = $this->readIntegerList(2 * $numStrings);
-        
+
         $data = [];
-        
-        for ($i = 0; $i < $numStrings; ++$i) 
-        {
+
+        for ($i = 0; $i < $numStrings; ++$i) {
             $sizeKey = $i * 2 + 1;
             $offsetKey = $i * 2 + 2;
             $originalStringSize = $originalStringTable[$sizeKey];
@@ -67,61 +62,53 @@ class MOLoader implements LoaderInterface
             $translationStringSize = $translationStringTable[$sizeKey];
             $translationStringOffset = $translationStringTable[$offsetKey];
             $originalString = [''];
-            
-            if ($originalStringSize > 0) 
-            {
+
+            if ($originalStringSize > 0) {
                 fseek($this->file, $originalStringOffset);
                 $originalString = explode("\0", fread($this->file, $originalStringSize));
             }
 
-            if ($translationStringSize > 0) 
-            {
+            if ($translationStringSize > 0) {
                 fseek($this->file, $translationStringOffset);
                 $translationString = explode("\0", fread($this->file, $translationStringSize));
 
-                if (count($originalString) > 1 && count($translationString) > 1) 
-                {
+                if (count($originalString) > 1 && count($translationString) > 1) {
                     $data[$originalString[0]] = $translationString;
                     array_shift($originalString);
 
-                    foreach ($originalString as $string) 
-                    {
+                    foreach ($originalString as $string) {
                         $data[$string] = '';
                     }
-                } 
-                else 
-                {
+                } else {
                     $data[$originalString[0]] = $translationString[0];
                 }
             }
         }
-        
+
         $metadata = [];
-        
-        if (array_key_exists('', $data)) 
-        {
+
+        if (array_key_exists('', $data)) {
             $rawHeaders = explode("\n", trim($data['']));
-            
-            foreach ($rawHeaders as $rawHeader) 
-            {
+
+            foreach ($rawHeaders as $rawHeader) {
                 list($header, $content) = array_map('trim', explode(':', $rawHeader, 2));
                 $metadata[$header] = $content;
             }
-            
+
             unset($data['']);
         }
-        
+
         $messages = $data;
         fclose($this->file);
-        
+
         return [
             'messages' => $messages,
-            'metadata' => $metadata
+            'metadata' => $metadata,
         ];
     }
-    
+
     /**
-     * @return integer
+     * @return int
      */
     protected function readInteger()
     {
@@ -130,14 +117,16 @@ class MOLoader implements LoaderInterface
 
         return $result['int'];
     }
-    
+
     /**
-     * @param integer $num
-     * @return integer
+     * @param int $num
+     *
+     * @return int
      */
     protected function readIntegerList($num)
     {
-        $format = $this->littleEndian ? 'V' . $num : 'N' . $num;
+        $format = $this->littleEndian ? 'V'.$num : 'N'.$num;
+
         return unpack($format, fread($this->file, 4 * $num));
     }
 }

@@ -4,9 +4,6 @@ namespace Elixir\I18N;
 
 use Elixir\Dispatcher\DispatcherInterface;
 use Elixir\Dispatcher\DispatcherTrait;
-use Elixir\I18N\Catalogue;
-use Elixir\I18N\I18NInterface;
-use Elixir\I18N\Locale;
 
 /**
  * @author Cédric Tanghe <ced.tanghe@gmail.com>
@@ -14,24 +11,23 @@ use Elixir\I18N\Locale;
 class I18N implements I18NInterface, DispatcherInterface
 {
     use DispatcherTrait;
-    
+
     /**
      * @var string
      */
     protected $locale;
-    
+
     /**
-     * @var array 
+     * @var array
      */
     protected $catalogues = [];
-    
+
     /**
      * @param string $locale
      */
-    public function __construct($locale = null) 
+    public function __construct($locale = null)
     {
-        if ($locale)
-        {
+        if ($locale) {
             $this->setLocale($locale);
         }
     }
@@ -43,19 +39,21 @@ class I18N implements I18NInterface, DispatcherInterface
     {
         $this->locale = $value;
     }
-    
+
     /**
      * {@inheritdoc}
      */
     public function getLocale()
     {
         $this->locale = $this->locale ?: Locale::getDefault();
+
         return $this->locale;
     }
 
     /**
      * @param string $locale
-     * @return boolean
+     *
+     * @return bool
      */
     public function hasCatalogue($locale)
     {
@@ -64,36 +62,33 @@ class I18N implements I18NInterface, DispatcherInterface
 
     /**
      * @param string $locale
-     * @param mixed $default
+     * @param mixed  $default
+     *
      * @return mixed;
      */
     public function getCatalogue($locale, $default = null)
     {
-        if ($this->hasCatalogue($locale))
-        {
+        if ($this->hasCatalogue($locale)) {
             return $this->catalogues[$locale];
         }
-        
+
         return is_callable($default) ? call_user_func($default) : $default;
     }
-    
+
     /**
      * @param Catalogue $catalogue
      */
     public function addCatalogue(Catalogue $catalogue)
     {
         $locale = $catalogue->getLocale();
-        
-        if ($this->hasCatalogue($locale))
-        {
+
+        if ($this->hasCatalogue($locale)) {
             $this->catalogues[$locale] = $catalogue;
-        }
-        else
-        {
+        } else {
             $this->catalogues[$locale]->merge($catalogue);
         }
     }
-    
+
     /**
      * @param string $locale
      */
@@ -101,7 +96,7 @@ class I18N implements I18NInterface, DispatcherInterface
     {
         unset($this->catalogues[$locale]);
     }
-    
+
     /**
      * @return array
      */
@@ -109,20 +104,19 @@ class I18N implements I18NInterface, DispatcherInterface
     {
         return $this->catalogues;
     }
-    
+
     /**
      * @return array
      */
     public function setCatalogues(array $catalogues)
     {
         $this->catalogues = [];
-        
-        foreach ($catalogues as $catalogue)
-        {
+
+        foreach ($catalogues as $catalogue) {
             $this->addCatalogue($catalogue, $catalogue->getLocale());
         }
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -131,38 +125,33 @@ class I18N implements I18NInterface, DispatcherInterface
         $options['locale'] = isset($options['locale']) ? $options['locale'] : $this->getLocale();
         $options['domain'] = isset($options['domain']) ? $options['domain'] : self::DEFAULT_TEXT_DOMAIN;
         $catalogue = $this->getCatalogue($options['locale']);
-        
-        if (!$catalogue)
-        {
+
+        if (!$catalogue) {
             $translated = null;
-        }
-        else
-        {
+        } else {
             $translated = $catalogue->getMessage($message, $options['domain']);
         }
-        
-        if (!$translated)
-        {
+
+        if (!$translated) {
             $event = new I18NEvent(
-                I18NEvent::MISSING_TRANSLATION, 
+                I18NEvent::MISSING_TRANSLATION,
                 [
-                    'message' => $message, 
-                    'options' => $options
+                    'message' => $message,
+                    'options' => $options,
                 ]
             );
-            
+
             $this->dispatch($event);
             $translated = $event->getMessage() ?: $message;
         }
-        
-        if (isset($options['%']))
-        {
+
+        if (isset($options['%'])) {
             $translated = str_replace(array_keys($options['%']), array_values($options['%']), $translated);
         }
-        
+
         return $translated;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -171,67 +160,56 @@ class I18N implements I18NInterface, DispatcherInterface
         $options['locale'] = isset($options['locale']) ? $options['locale'] : $this->getLocale();
         $options['domain'] = isset($options['domain']) ? $options['domain'] : self::DEFAULT_TEXT_DOMAIN;
         $catalogue = $this->getCatalogue($options['locale']);
-        
-        if (!$catalogue)
-        {
+
+        if (!$catalogue) {
             $translated = null;
-        }
-        else
-        {
+        } else {
             $translated = $catalogue->getMessage($singular, $options['domain']);
         }
-        
-        if (!$translated)
-        {
+
+        if (!$translated) {
             $event = new I18NEvent(
-                I18NEvent::MISSING_PLURAL_TRANSLATION, 
+                I18NEvent::MISSING_PLURAL_TRANSLATION,
                 [
-                    'message' => [$singular, $plural], 
+                    'message' => [$singular, $plural],
                     'number' => $number,
-                    'options' => $options
+                    'options' => $options,
                 ]
             );
-            
+
             $this->dispatch($event);
             $translated = $event->getMessage() ?: [$singular, $plural];
         }
-        
+
         // Pluralize
         $rules = PluralForms::get($options['locale']);
 
-        if (!$rules)
-        {
-            if ($catalogue && $catalogue->hasMetadata('plural-form'))
-            {
+        if (!$rules) {
+            if ($catalogue && $catalogue->hasMetadata('plural-form')) {
                 $rules = $catalogue->getMessage('plural-form');
 
-                if (!is_callable($rules))
-                {
+                if (!is_callable($rules)) {
                     $rules = PluralForms::parse($rules);
 
-                    if ($rules)
-                    {
+                    if ($rules) {
                         $rules = $rules['plural'];
                     }
                 }
             }
-        }
-        else
-        {
+        } else {
             $rules = $rules['plural'];
         }
 
         $id = $rules ? PluralForms::evaluate($number, $rules) : 0;
         $translated = isset($translated[$id]) ? $translated[$id] : ($id > 0 ? $plural : $singular);
 
-        if (isset($options['%']))
-        {
+        if (isset($options['%'])) {
             $translated = str_replace(array_keys($options['%']), array_values($options['%']), $translated);
         }
-        
+
         return $translated;
     }
-    
+
     /**
      * @ignore
      */
@@ -239,7 +217,7 @@ class I18N implements I18NInterface, DispatcherInterface
     {
         return [
             'locale' => $this->getLocale(),
-            'catalogues' => $this->getCatalogues()
+            'catalogues' => $this->getCatalogues(),
         ];
     }
 }

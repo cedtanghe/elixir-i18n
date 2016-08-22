@@ -10,7 +10,6 @@ use Elixir\Config\Writer\WriterInterface;
 use Elixir\I18N\Loader\CSVLoader;
 use Elixir\I18N\Loader\MOLoader;
 use Elixir\I18N\Loader\POLoader;
-use Elixir\I18N\LoadParser;
 use Elixir\I18N\Writer\CSVWritter;
 use Elixir\I18N\Writer\POWriter;
 
@@ -20,74 +19,64 @@ use Elixir\I18N\Writer\POWriter;
 class Catalogue implements CacheableInterface
 {
     use LoaderFactoryAwareTrait;
-    
+
     /**
      * @param LoaderFactory $factory
      */
     public static function addLoaderProvider(LoaderFactory $factory)
     {
-        $factory->add('MO', function($config, $options)
-        {
-            if (strstr($config, '.mo'))
-            {
+        $factory->add('MO', function ($config, $options) {
+            if (strstr($config, '.mo')) {
                 return new MOLoader();
             }
-            
+
             return null;
         });
-        
-        $factory->add('CSV', function($config, $options)
-        {
-            if(strstr($config, '.csv'))
-            {
+
+        $factory->add('CSV', function ($config, $options) {
+            if (strstr($config, '.csv')) {
                 new CSVLoader();
             }
-            
+
             return null;
         });
-        
-        $factory->add('PO', function($config, $options)
-        {
-            if (strstr($config, '.po'))
-            {
+
+        $factory->add('PO', function ($config, $options) {
+            if (strstr($config, '.po')) {
                 return new POLoader();
             }
-            
+
             return null;
         });
     }
-    
+
     /**
      * @param WriterFactory $factory
      */
     public static function addWriterProvider(WriterFactory $factory)
     {
-        $factory->add('CSV', function($file, $options)
-        {
-            if (strstr($file, '.csv'))
-            {
+        $factory->add('CSV', function ($file, $options) {
+            if (strstr($file, '.csv')) {
                 return new CSVWritter();
             }
-            
+
             return null;
         });
-        
-        $factory->add('PO', function($file, $options)
-        {
-            if (strstr($file, '.po'))
-            {
+
+        $factory->add('PO', function ($file, $options) {
+            if (strstr($file, '.po')) {
                 return new POWriter();
             }
-            
+
             return null;
         });
     }
-    
+
     /**
      * @var string
      */
     protected $locale;
-    
+
     /**
      * @var array
      */
@@ -102,16 +91,16 @@ class Catalogue implements CacheableInterface
      * @var array
      */
     protected $resources = [];
-    
+
     /**
-     * @var CacheableInterface 
+     * @var CacheableInterface
      */
     protected $cache;
 
     /**
      * @param string $locale
-     * @param array $messages
-     * @param array $metadata
+     * @param array  $messages
+     * @param array  $metadata
      */
     public function __construct($locale, array $messages = [], array $metadata = [])
     {
@@ -119,15 +108,15 @@ class Catalogue implements CacheableInterface
         $this->messages = $messages;
         $this->metadata = $metadata;
     }
-    
+
     /**
      * @return string
      */
-    public function getLocale() 
+    public function getLocale()
     {
         return $this->locale;
     }
-    
+
     /**
      * @return array
      */
@@ -135,7 +124,7 @@ class Catalogue implements CacheableInterface
     {
         return array_unique(array_merge(array_keys($this->messages), array_keys($this->resources)));
     }
-    
+
     /**
      * @param CacheableInterface $value
      */
@@ -143,7 +132,7 @@ class Catalogue implements CacheableInterface
     {
         $this->cache = $value;
     }
-    
+
     /**
      * @return CacheableInterface
      */
@@ -151,128 +140,114 @@ class Catalogue implements CacheableInterface
     {
         return $this->cache;
     }
-    
+
     /**
      * {@inheritdoc}
      */
     public function loadCache()
     {
-        if (null === $this->cache)
-        {
+        if (null === $this->cache) {
             return false;
         }
-        
+
         $data = $this->cache->loadCache();
-        
-        if ($data)
-        {
+
+        if ($data) {
             $data = LoadParser::parse($data);
             $this->messages = array_merge($this->messages, $data['messages']);
             $this->metadata = array_merge($this->metadata, $data['metadata']);
         }
-        
+
         return $data;
     }
-    
+
     /**
      * {@inheritdoc}
      */
     public function cacheLoaded()
     {
-        if (null === $this->cache)
-        {
+        if (null === $this->cache) {
             return false;
         }
-        
+
         return $this->cache->cacheLoaded();
     }
 
     /**
      * @param string $domain
-     * @return boolean
+     *
+     * @return bool
      */
     public function isResourcesLoaded($domain = null)
     {
-        if (null !== $domain && isset($this->resources[$domain]))
-        {
+        if (null !== $domain && isset($this->resources[$domain])) {
             $domains = $this->resources[$domain];
-        }
-        else
-        {
+        } else {
             $domains = [];
-            
-            foreach ($this->resources as $domain => $resources)
-            {
+
+            foreach ($this->resources as $domain => $resources) {
                 $domains = array_merge($domains, $resources);
             }
         }
-        
-        foreach ($domains as $data)
-        {
-            if ($data['loaded'])
-            {
+
+        foreach ($domains as $data) {
+            if ($data['loaded']) {
                 return true;
             }
         }
-        
+
         return false;
     }
-    
+
     /**
      * @param string $domain
-     * @param boolean $withInfos
+     * @param bool   $withInfos
+     *
      * @return array
      */
     public function getResources($domain = null, $withInfos = false)
     {
-        if (null === $domain && $withInfos)
-        {
+        if (null === $domain && $withInfos) {
             return $this->resources;
         }
-        
-        if (null !== $domain && isset($this->resources[$domain]))
-        {
+
+        if (null !== $domain && isset($this->resources[$domain])) {
             $domains = [$domain => $this->resources[$domain]];
-        }
-        else
-        {
+        } else {
             $domains = $this->resources;
         }
-        
+
         $result = [];
-        
-        foreach ($domains as $textdomain => $resources)
-        {
-            foreach ($resources as $data)
-            {
+
+        foreach ($domains as $textdomain => $resources) {
+            foreach ($resources as $data) {
                 $result[$textdomain][] = $withInfos ? $data : $data['resource'];
             }
         }
-        
+
         return null !== $domain ? $result[$domain] : $result;
     }
-    
+
     /**
      * @param mixed $resource
      * @param array $options
      */
     public function addResource($resource, array $options = [])
     {
-        if ($this->cacheLoaded() && $this->isFreshCache())
-        {
+        if ($this->cacheLoaded() && $this->isFreshCache()) {
             return true;
         }
-        
+
         $domain = isset($options['domain']) ? $options['domain'] : I18NInterface::DEFAULT_TEXT_DOMAIN;
         unset($options['domain']);
-        
+
         $this->resources[$domain][] = [
             'resource' => $resource,
             'options' => $options,
-            'loaded' => false
+            'loaded' => false,
         ];
     }
-    
+
     /**
      * @param array $options
      */
@@ -280,153 +255,135 @@ class Catalogue implements CacheableInterface
     {
         $domain = isset($options['domain']) ? $options['domain'] : null;
         unset($options['domain']);
-        
-        if ($this->isResourcesLoaded($domain))
-        {
+
+        if ($this->isResourcesLoaded($domain)) {
             return;
         }
-        
-        foreach ($this->resources as $textdomain => &$resources)
-        {
-            if (null === $domain || $textdomain === $domain)
-            {
-                foreach ($resources as &$data)
-                {
-                    if ($data['loaded'])
-                    {
+
+        foreach ($this->resources as $textdomain => &$resources) {
+            if (null === $domain || $textdomain === $domain) {
+                foreach ($resources as &$data) {
+                    if ($data['loaded']) {
                         continue;
                     }
 
                     $this->loadResource(
-                        $data['resource'], 
-                        $textdomain, 
+                        $data['resource'],
+                        $textdomain,
                         $data['options'] + $options
                     );
-                    
+
                     $data['loaded'] = true;
                 }
-                
-                if ($textdomain === $domain)
-                {
+
+                if ($textdomain === $domain) {
                     return;
                 }
             }
         }
     }
-    
+
     /**
-     * @param mixed $resource
+     * @param mixed  $resource
      * @param string $domain
-     * @param array $options
+     * @param array  $options
+     *
      * @return array
      */
     public function loadResource($resource, $domain, array $options = [])
     {
-        if (is_callable($resource))
-        {
+        if (is_callable($resource)) {
             return call_user_func_array($resource, [$this]);
         }
-        
-        if (null === $this->loaderFactory)
-        {
+
+        if (null === $this->loaderFactory) {
             $this->loaderFactory = new LoaderFactory();
             self::addLoaderProvider($this->loaderFactory);
         }
-        
+
         $loader = $this->loaderFactory->create($resource, $options);
         $parsed = LoadParser::parse($loader->load($resource));
-        
-        foreach ($parsed['messages'] as $id => $translation)
-        {
+
+        foreach ($parsed['messages'] as $id => $translation) {
             $this->addMessage($id, $translation, $domain);
         }
-        
-        if (isset($options['load-metadata']) && $options['load-metadata'])
-        {
-            foreach ($parsed['metadata'] as $meta => $value)
-            {
-                if ($meta === 'options')
-                {
+
+        if (isset($options['load-metadata']) && $options['load-metadata']) {
+            foreach ($parsed['metadata'] as $meta => $value) {
+                if ($meta === 'options') {
                     continue;
                 }
-                
+
                 $this->setMetadata($meta, $value);
             }
         }
-        
-        if (isset($parsed['metadata']['options']))
-        {
+
+        if (isset($parsed['metadata']['options'])) {
             $options = $this->getMetadata('options', []);
-            
-            if (!isset($options[$domain]))
-            {
+
+            if (!isset($options[$domain])) {
                 $options[$domain] = [];
             }
-            
+
             $options[$domain] += $parsed['metadata']['options'];
-            
+
             $this->setMetadata('options', $options);
         }
-        
+
         return $parsed;
     }
-    
+
     /**
      * @param string $id
-     * @return boolean
+     *
+     * @return bool
      */
     public function hasMessage($id, $domain = I18NInterface::DEFAULT_TEXT_DOMAIN)
     {
-        if (isset($this->messages[$domain][$id]))
-        {
+        if (isset($this->messages[$domain][$id])) {
             return true;
-        }
-        else if (!$this->isResourcesLoaded($domain) && isset($this->resources[$domain]))
-        {
-            foreach ($this->resources[$domain] as &$resources)
-            {
-                foreach ($resources as &$data)
-                {
-                    if ($data['loaded'])
-                    {
+        } elseif (!$this->isResourcesLoaded($domain) && isset($this->resources[$domain])) {
+            foreach ($this->resources[$domain] as &$resources) {
+                foreach ($resources as &$data) {
+                    if ($data['loaded']) {
                         continue;
                     }
-                    
+
                     $this->loadResource($data['resource'], $domain);
                     $data['loaded'] = true;
 
-                    if (isset($this->messages[$domain][$id]))
-                    {
+                    if (isset($this->messages[$domain][$id])) {
                         return true;
                     }
                 }
             }
         }
-        
+
         return false;
     }
-    
+
     /**
      * @param string $id
      * @param string $domain
-     * @param mixed $default
+     * @param mixed  $default
+     *
      * @return string|array
      */
     public function getMessage($id, $domain = I18NInterface::DEFAULT_TEXT_DOMAIN, $default = null)
     {
         return $this->hasMessage($id, $domain) ? $this->messages[$domain][$id] : (is_callable($default) ? call_user_func($default) : $default);
     }
-    
+
     /**
-     * @param string $id
+     * @param string       $id
      * @param string|array $translation
-     *  @param string $domain
+     * @param string       $domain
      */
     public function addMessage($id, $translation, $domain = I18NInterface::DEFAULT_TEXT_DOMAIN)
     {
         $this->messages[$domain][$id] = $translation;
     }
-    
+
     /**
      * @param string $id
      * @param string $domain
@@ -435,60 +392,60 @@ class Catalogue implements CacheableInterface
     {
         unset($this->messages[$domain][$id]);
     }
-    
+
     /**
      * @param string $domain
+     *
      * @return array
      */
     public function getMessages($domain = null)
     {
         return $domain ? (isset($this->messages[$domain]) ? $this->messages[$domain] : []) : $this->messages;
     }
-    
+
     /**
-     * @param array $messages
+     * @param array  $messages
      * @param string $domain
      */
     public function setMessages(array $messages, $domain = null)
     {
-        if (null === $domain)
-        {
+        if (null === $domain) {
             $this->messages = $messages;
-        }
-        else
-        {
+        } else {
             $this->messages[$domain] = $messages;
         }
     }
-    
+
     /**
      * @param string $key
-     * @return boolean
+     *
+     * @return bool
      */
     public function hasMetadata($key)
     {
         return isset($this->metadata[$key]);
     }
-    
+
     /**
      * @param string $key
-     * @param mixed $default
+     * @param mixed  $default
+     *
      * @return mixed
      */
     public function getMetadata($key, $default = null)
     {
         return isset($this->metadata[$key]) ? $this->metadata[$key] : (is_callable($default) ? call_user_func($default) : $default);
     }
-    
+
     /**
      * @param string $key
-     * @param mixed $value
+     * @param mixed  $value
      */
     public function setMetadata($key, $value)
     {
         $this->metadata[$key] = $value;
     }
-    
+
     /**
      * @param string $key
      */
@@ -504,7 +461,7 @@ class Catalogue implements CacheableInterface
     {
         return $this->metadata;
     }
-    
+
     /**
      * @param array $metadata
      */
@@ -512,111 +469,105 @@ class Catalogue implements CacheableInterface
     {
         $this->metadata = $metadata;
     }
-    
+
     /**
      * @param WriterInterface $writer
-     * @param string $file
-     * @param string $domain
-     * @return boolean
+     * @param string          $file
+     * @param string          $domain
+     *
+     * @return bool
      */
     public function export(WriterInterface $writer, $file, $domain = I18NInterface::DEFAULT_TEXT_DOMAIN)
     {
         $this->loadResources(['domain' => $domain]);
-        
+
         return $writer->export([
                 'locale' => $this->getLocale(),
                 'domain' => $domain,
                 'messages' => $this->getMessages($domain),
-                'metadata' => $this->allMetadata()
-            ], 
+                'metadata' => $this->allMetadata(),
+            ],
             $file
         );
     }
-    
+
     /**
      * {@inheritdoc}
      */
     public function isFreshCache()
     {
-        if (null === $this->cache)
-        {
+        if (null === $this->cache) {
             return false;
         }
-        
+
         return $this->cache->isFreshCache();
     }
-    
+
     /**
      * {@inheritdoc}
      */
     public function exportToCache(array $data = null)
     {
-        if (null === $this->cache)
-        {
+        if (null === $this->cache) {
             return false;
         }
-        
-        if ($data)
-        {
+
+        if ($data) {
             $data = LoadParser::parse($data);
             $this->messages = array_merge($this->messages, $data['messages']);
             $this->metadata = array_merge($this->metadata, $data['metadata']);
         }
-        
+
         return $this->cache->exportToCache($this->getExportableData());
     }
-    
+
     /**
      * {@inheritdoc}
      */
     public function invalidateCache()
     {
-        if (null === $this->cache)
-        {
+        if (null === $this->cache) {
             return false;
         }
-        
+
         return $this->cache->invalidateCache();
     }
-    
+
     /**
      * @return array
      */
     protected function getExportableData()
     {
         $this->loadResources();
-        
+
         return [
             'locale' => $this->getLocale(),
             'domain' => null,
             'messages' => $this->messages,
-            'metadata' => $this->metadata
+            'metadata' => $this->metadata,
         ];
     }
-    
+
     /**
      * @param Catalogue $catalogue
      */
-    public function merge(Catalogue $catalogue) 
+    public function merge(Catalogue $catalogue)
     {
         $resources = $catalogue->getResources(null, true);
 
-        foreach ($resources as &$group)
-        {
-            foreach ($group as $key => $value)
-            {
-                if ($v['loaded'])
-                {
+        foreach ($resources as &$group) {
+            foreach ($group as $key => $value) {
+                if ($v['loaded']) {
                     unset($group[$key]);
                 }
             }
         }
-        
+
         $this->resources = array_merge($this->resources, $resources);
         $this->messages = array_merge($this->messages, $catalogue->getMessages(null));
         $this->metadata = array_merge($this->metadata, $catalogue->allMetadata());
     }
-    
+
     /**
      * @ignore
      */
@@ -627,7 +578,7 @@ class Catalogue implements CacheableInterface
             'messages' => $this->getMessages(),
             'metadata' => $this->allMetadata(),
             'has_resources' => $this->isResourcesLoaded(),
-            'domains' => $this->getDomains()
+            'domains' => $this->getDomains(),
         ];
     }
 }

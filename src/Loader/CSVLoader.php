@@ -14,12 +14,12 @@ class CSVLoader implements LoaderInterface
      * @var string
      */
     protected $delimiter;
-    
+
     /**
      * @var string
      */
     protected $enclosure;
-    
+
     /**
      * @param string $delimiter
      * @param string $enclosure
@@ -29,7 +29,7 @@ class CSVLoader implements LoaderInterface
         $this->delimiter = $delimiter;
         $this->enclosure = $enclosure;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -37,20 +37,18 @@ class CSVLoader implements LoaderInterface
     {
         $result = csv_to_array($config, false, $this->delimiter, $this->enclosure);
         $messages = [];
-        
-        foreach ($result as $row)
-        {
+
+        foreach ($result as $row) {
             $id = array_shift($row);
-            
-            if ($id)
-            {
+
+            if ($id) {
                 $messages[$id] = $row;
             }
         }
-        
+
         return [
             'messages' => $messages,
-            'metadata' => []
+            'metadata' => [],
         ];
     }
 }

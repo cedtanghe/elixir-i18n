@@ -12,77 +12,65 @@ use Sepia\PoParser;
 class POLoader implements LoaderInterface
 {
     /**
-     * @var callable 
+     * @var callable
      */
     protected $POParser;
-    
+
     /**
      * @param callable $POParser
      */
     public function __construct(callable $POParser = null)
     {
-        if (null !== $POParser)
-        {
+        if (null !== $POParser) {
             $this->setPOParser($POParser);
-        } 
-        else 
-        {
-            if (class_exists('\Sepia\PoParser'))
-            {
-                $this->setPOParser(function($file)
-                {
+        } else {
+            if (class_exists('\Sepia\PoParser')) {
+                $this->setPOParser(function ($file) {
                     $parser = new PoParser(new FileHandler($file));
                     $parser->parse();
-                    
+
                     $messages = [];
                     $metadata = [];
                     $c = 0;
-                    
-                    foreach ($parser->getEntries() as $entry) 
-                    {
+
+                    foreach ($parser->getEntries() as $entry) {
                         $msgid = current($entry['msgid']);
                         $msgstr = [];
-                        
-                        if (isset($entry['msgid_plural']))
-                        {
+
+                        if (isset($entry['msgid_plural'])) {
                             $i = 0;
-                        
-                            while (isset($entry['msgstr[' . $i . ']']))
-                            {
-                                $msgstr[] = current($entry['msgstr[' . $i . ']']);
-                                $i++;
+
+                            while (isset($entry['msgstr['.$i.']'])) {
+                                $msgstr[] = current($entry['msgstr['.$i.']']);
+                                ++$i;
                             }
-                            
+
                             $metadata['options']['msgid_plural'][$msgid] = current($entry['msgid_plural']);
-                        }
-                        else
-                        {
+                        } else {
                             $msgstr[] = current($entry['msgstr']);
                         }
-                        
-                        if (isset($entry['reference']))
-                        {
+
+                        if (isset($entry['reference'])) {
                             $metadata['options']['reference'][$msgid] = $entry['reference'];
                         }
-                        
+
                         $messages[$msgid] = $msgstr;
                     }
-                    
-                    foreach ($parser->getHeaders() as $rawHeader) 
-                    {
+
+                    foreach ($parser->getHeaders() as $rawHeader) {
                         list($header, $content) = array_map('trim', explode(':', trim($rawHeader, '"'), 2));
                         $metadata[$header] = substr($content, -2) === '\n' ? substr($content, 0, -2) : $content;
                     }
-                    
+
                     return [
                         'messages' => $messages,
-                        'metadata' => $metadata
+                        'metadata' => $metadata,
                     ];
                 });
             }
         }
     }
-    
+
     /**
      * @param callable $value
      */
@@ -90,7 +78,7 @@ class POLoader implements LoaderInterface
     {
         $this->POParser = $value;
     }
-    
+
     /**
      * @return callable
      */
@@ -98,7 +86,7 @@ class POLoader implements LoaderInterface
     {
         return $this->POParser;
     }
-    
+
     /**
      * {@inheritdoc}
      */

@@ -7,47 +7,48 @@ use Elixir\Dispatcher\Event;
 /**
  * @author Cédric Tanghe <ced.tanghe@gmail.com>
  */
-class I18NEvent extends Event 
+class I18NEvent extends Event
 {
     /**
      * @var string
      */
     const MISSING_TRANSLATION = 'missing_translation';
-    
+
     /**
      * @var string
      */
     const MISSING_PLURAL_TRANSLATION = 'missing_plural_translation';
-    
+
     /**
      * @var string|array
      */
     protected $message;
-    
+
     /**
-     * @var integer
+     * @var int
      */
     protected $number;
-    
+
     /**
      * @var array
      */
     protected $options;
-    
+
     /**
      * {@inheritdoc}
+     *
      * @param array $params
      */
     public function __construct($type, array $params = [])
     {
         parent::__construct($type);
-        
+
         $params += [
             'message' => null,
             'number' => 0,
-            'options' => []
+            'options' => [],
         ];
-        
+
         $this->message = $params['message'];
         $this->number = $params['number'];
         $this->options = $params['options'];
@@ -60,7 +61,7 @@ class I18NEvent extends Event
     {
         return $this->message;
     }
-    
+
     /**
      * @param string|array $value
      */
@@ -68,15 +69,15 @@ class I18NEvent extends Event
     {
         $this->message = $value;
     }
-    
+
     /**
-     * @return integer
+     * @return int
      */
     public function getNumber()
     {
         return $this->number;
     }
-    
+
     /**
      * @return array
      */
