@@ -262,18 +262,18 @@ class Catalogue implements CacheableInterface
 
         foreach ($this->resources as $textdomain => &$resources) {
             if (null === $domain || $textdomain === $domain) {
-                foreach ($resources as &$data) {
-                    if ($data['loaded']) {
+                foreach ($resources as &$resource) {
+                    if ($resource['loaded']) {
                         continue;
                     }
 
                     $this->loadResource(
-                        $data['resource'],
+                        $resource['resource'],
                         $textdomain,
-                        $data['options'] + $options
+                        $resource['options'] + $options
                     );
 
-                    $data['loaded'] = true;
+                    $resource['loaded'] = true;
                 }
 
                 if ($textdomain === $domain) {
@@ -343,18 +343,16 @@ class Catalogue implements CacheableInterface
         if (isset($this->messages[$domain][$id])) {
             return true;
         } elseif (!$this->isResourcesLoaded($domain) && isset($this->resources[$domain])) {
-            foreach ($this->resources[$domain] as &$resources) {
-                foreach ($resources as &$data) {
-                    if ($data['loaded']) {
-                        continue;
-                    }
+            foreach ($this->resources[$domain] as &$resource) {
+                if ($resource['loaded']) {
+                    continue;
+                }
 
-                    $this->loadResource($data['resource'], $domain);
-                    $data['loaded'] = true;
+                $this->loadResource($resource['resource'], $domain);
+                $resource['loaded'] = true;
 
-                    if (isset($this->messages[$domain][$id])) {
-                        return true;
-                    }
+                if (isset($this->messages[$domain][$id])) {
+                    return true;
                 }
             }
         }
@@ -557,7 +555,7 @@ class Catalogue implements CacheableInterface
 
         foreach ($resources as &$group) {
             foreach ($group as $key => $value) {
-                if ($v['loaded']) {
+                if ($value['loaded']) {
                     unset($group[$key]);
                 }
             }
